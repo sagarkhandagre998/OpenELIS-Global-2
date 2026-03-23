@@ -10,4 +10,10 @@
   <!-- EQA Enabled configuration for Order Entry -->
   <include relativeToChangelogFile="true" file="002-eqa-enabled-config.xml"/>
 
+  <!-- Add hide_in_new_ui column to menu table -->
+  <include relativeToChangelogFile="true" file="003-add-hide-in-new-ui-column.xml"/>
+
+  <!-- Patient Study View React menu entry (Patient -> Study -> View migration) -->
+  <include relativeToChangelogFile="true" file="004-patient-study-view-react-menu.xml"/>
+
 </databaseChangeLog>
