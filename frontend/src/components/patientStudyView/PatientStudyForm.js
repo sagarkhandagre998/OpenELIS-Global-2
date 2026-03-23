@@ -152,7 +152,7 @@ const DemographicsBlock = ({ formData }) => (
 // ─────────────────────────────────────────────────────────────────────────────
 // Initial ARV sub-form
 // ─────────────────────────────────────────────────────────────────────────────
-const InitialARVForm = ({ formData, obs, lists }) => (
+const InitialARVForm = ({ formData, obs, projectData, lists }) => (
   <>
     <DemographicsBlock formData={formData} />
 
@@ -257,10 +257,80 @@ const InitialARVForm = ({ formData, obs, lists }) => (
       options={lists.yesNo || []}
     />
     <ReadOnlySelect
+      labelId="patient.project.priorDiseases"
+      defaultMessage="Prior Diseases (Other)"
+      value={obs.priorDiseases}
+      options={lists.yesNo || []}
+    />
+    <ReadOnlyField
+      labelId="patient.project.specify"
+      defaultMessage="Specify"
+      value={obs.priorDiseasesValue}
+    />
+    <ReadOnlySelect
+      labelId="patient.project.cotrimoxazoleTreatment"
+      defaultMessage="Cotrimoxazole Treatment"
+      value={obs.cotrimoxazoleTreatment}
+      options={lists.yesNo || []}
+    />
+    <ReadOnlySelect
+      labelId="patient.project.aidsStage"
+      defaultMessage="AIDS Stage"
+      value={obs.aidsStage}
+      options={lists.aidsStages || []}
+    />
+    <ReadOnlySelect
+      labelId="patient.project.anyCurrentDiseases"
+      defaultMessage="Any Current Diseases"
+      value={obs.anyCurrentDiseases}
+      options={lists.yesNo || []}
+    />
+    {(lists.currentDiseasesList || []).map((disease) => (
+      <ReadOnlySelect
+        key={disease.name}
+        labelId={disease.name}
+        defaultMessage={disease.label}
+        value={obs[disease.name]}
+        options={lists.yesNo || []}
+      />
+    ))}
+    <ReadOnlySelect
+      labelId="patient.project.currentDiseases"
+      defaultMessage="Current Diseases (Other)"
+      value={obs.currentDiseases}
+      options={lists.yesNo || []}
+    />
+    <ReadOnlyField
+      labelId="patient.project.specify"
+      defaultMessage="Specify"
+      value={obs.currentDiseasesValue}
+    />
+    <ReadOnlySelect
+      labelId="patient.project.currentOITreatment"
+      defaultMessage="Current OI Treatment"
+      value={obs.currentOITreatment}
+      options={lists.yesNo || []}
+    />
+    <ReadOnlyField
+      labelId="patient.project.patientWeight"
+      defaultMessage="Patient Weight"
+      value={obs.patientWeight}
+    />
+    <ReadOnlyField
+      labelId="patient.project.karnofskyScore"
+      defaultMessage="Karnofsky Score"
+      value={obs.karnofskyScore}
+    />
+    <ReadOnlySelect
       labelId="patient.project.underInvestigation"
       defaultMessage="Under Investigation"
       value={obs.underInvestigation}
       options={lists.yesNo || []}
+    />
+    <ReadOnlyField
+      labelId="patient.project.underInvestigationComment"
+      defaultMessage="Under Investigation Note"
+      value={projectData.underInvestigationNote}
     />
   </>
 );
@@ -268,7 +338,7 @@ const InitialARVForm = ({ formData, obs, lists }) => (
 // ─────────────────────────────────────────────────────────────────────────────
 // Follow-up ARV sub-form
 // ─────────────────────────────────────────────────────────────────────────────
-const FollowupARVForm = ({ formData, obs, lists }) => (
+const FollowupARVForm = ({ formData, obs, projectData, lists }) => (
   <>
     <DemographicsBlock formData={formData} />
 
@@ -408,10 +478,44 @@ const FollowupARVForm = ({ formData, obs, lists }) => (
       value={obs.clinicVisits}
     />
     <ReadOnlySelect
+      labelId="patient.project.priorARVTreatment"
+      defaultMessage="Prior ARV Treatment"
+      value={obs.priorARVTreatment}
+      options={lists.yesNo || []}
+    />
+    <ReadOnlySelect
+      labelId="patient.project.antiTbTreatment"
+      defaultMessage="Anti-TB Treatment"
+      value={obs.antiTbTreatment}
+      options={lists.yesNo || []}
+    />
+    <ReadOnlySelect
+      labelId="patient.project.cotrimoxazoleTreatAnyAdvEff"
+      defaultMessage="Cotrimoxazole Any Adverse Effects"
+      value={obs.cotrimoxazoleTreatmentAnyAdverseEffects}
+      options={lists.yesNo || []}
+    />
+    <ReadOnlySelect
+      labelId="patient.project.currentDiseases"
+      defaultMessage="Current Diseases (Other)"
+      value={obs.currentDiseases}
+      options={lists.yesNo || []}
+    />
+    <ReadOnlyField
+      labelId="patient.project.specify"
+      defaultMessage="Specify"
+      value={obs.currentDiseasesValue}
+    />
+    <ReadOnlySelect
       labelId="patient.project.underInvestigation"
       defaultMessage="Under Investigation"
       value={obs.underInvestigation}
       options={lists.yesNo || []}
+    />
+    <ReadOnlyField
+      labelId="patient.project.underInvestigationComment"
+      defaultMessage="Under Investigation Note"
+      value={projectData.underInvestigationNote}
     />
   </>
 );
@@ -432,6 +536,26 @@ const EIDForm = ({ formData, obs, projectData, lists }) => (
       labelId="sample.entry.project.EID.siteCode"
       defaultMessage="Site Code"
       value={projectData.EIDsiteCode}
+    />
+    <ReadOnlyField
+      labelId="patient.project.nameOfRequestor"
+      defaultMessage="Name of Requester"
+      value={obs.nameOfRequestor}
+    />
+    <ReadOnlyField
+      labelId="patient.project.nameOfSampler"
+      defaultMessage="Name of Sampler"
+      value={obs.nameOfSampler}
+    />
+    <ReadOnlyField
+      labelId="sample.entry.project.receivedTime"
+      defaultMessage="Received Time"
+      value={formData.receivedTimeForDisplay}
+    />
+    <ReadOnlyField
+      labelId="sample.entry.project.timeTaken"
+      defaultMessage="Interview Time"
+      value={formData.interviewTime}
     />
 
     <SectionHeading
@@ -524,6 +648,17 @@ const EIDForm = ({ formData, obs, projectData, lists }) => (
       defaultMessage="DBS Taken"
       checked={projectData.dbsTaken}
     />
+    <ReadOnlySelect
+      labelId="patient.project.underInvestigation"
+      defaultMessage="Under Investigation"
+      value={obs.underInvestigation}
+      options={lists.yesNo || []}
+    />
+    <ReadOnlyField
+      labelId="patient.project.underInvestigationComment"
+      defaultMessage="Under Investigation Note"
+      value={projectData.underInvestigationNote}
+    />
   </>
 );
 
@@ -534,6 +669,21 @@ const VLForm = ({ formData, obs, projectData, lists }) => (
   <>
     <DemographicsBlock formData={formData} />
 
+    <ReadOnlyField
+      labelId="patient.upid.code"
+      defaultMessage="UPID Code"
+      value={formData.upidCode}
+    />
+    <ReadOnlyField
+      labelId="sample.entry.project.receivedTime"
+      defaultMessage="Received Time"
+      value={formData.receivedTimeForDisplay}
+    />
+    <ReadOnlyField
+      labelId="sample.entry.project.timeTaken"
+      defaultMessage="Interview Time"
+      value={formData.interviewTime}
+    />
     <ReadOnlySelect
       labelId="sample.entry.project.ARV.centerName"
       defaultMessage="Center Name"
@@ -714,6 +864,11 @@ const VLForm = ({ formData, obs, projectData, lists }) => (
       value={obs.underInvestigation}
       options={lists.yesNo || []}
     />
+    <ReadOnlyField
+      labelId="patient.project.underInvestigationComment"
+      defaultMessage="Under Investigation Note"
+      value={projectData.underInvestigationNote}
+    />
   </>
 );
 
@@ -818,6 +973,16 @@ const RecencyForm = ({ formData, obs, projectData, lists }) => (
       defaultMessage="Center Code"
       value={projectData.ARVcenterCode}
       options={lists.arvOrgsByName || []}
+    />
+    <ReadOnlyField
+      labelId="sample.entry.project.receivedTime"
+      defaultMessage="Received Time"
+      value={formData.receivedTimeForDisplay}
+    />
+    <ReadOnlyField
+      labelId="sample.entry.project.timeTaken"
+      defaultMessage="Interview Time"
+      value={formData.interviewTime}
     />
 
     <SectionHeading
