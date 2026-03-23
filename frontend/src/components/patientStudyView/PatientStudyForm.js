@@ -25,7 +25,7 @@ const ReadOnlyField = ({ labelId, defaultMessage, value }) => {
           defaultMessage: defaultMessage,
         })}
         value={value || ""}
-        readOnly
+        disabled
       />
     </Column>
   );
@@ -49,7 +49,7 @@ const ReadOnlySelect = ({ labelId, defaultMessage, value, options = [] }) => {
           defaultMessage: defaultMessage,
         })}
         value={displayValue}
-        readOnly
+        disabled
       />
     </Column>
   );
