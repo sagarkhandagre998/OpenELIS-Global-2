@@ -17,7 +17,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 const ReadOnlyField = ({ labelId, defaultMessage, value }) => {
   const intl = useIntl();
   return (
-    <Column lg={8} md={4} sm={4} style={{ marginBottom: "1rem" }}>
+    <Column lg={8} md={8} sm={4} style={{ marginBottom: "1rem" }}>
       <TextInput
         id={labelId}
         labelText={intl.formatMessage({
@@ -25,7 +25,7 @@ const ReadOnlyField = ({ labelId, defaultMessage, value }) => {
           defaultMessage: defaultMessage,
         })}
         value={value || ""}
-        disabled
+        readOnly
       />
     </Column>
   );
@@ -41,7 +41,7 @@ const ReadOnlySelect = ({ labelId, defaultMessage, value, options = [] }) => {
     ? matched.value || matched.organizationName || matched.doubleName || ""
     : value || "";
   return (
-    <Column lg={8} md={4} sm={4} style={{ marginBottom: "1rem" }}>
+    <Column lg={8} md={8} sm={4} style={{ marginBottom: "1rem" }}>
       <TextInput
         id={labelId + "_display"}
         labelText={intl.formatMessage({
@@ -49,7 +49,7 @@ const ReadOnlySelect = ({ labelId, defaultMessage, value, options = [] }) => {
           defaultMessage: defaultMessage,
         })}
         value={displayValue}
-        disabled
+        readOnly
       />
     </Column>
   );
@@ -61,7 +61,7 @@ const ReadOnlySelect = ({ labelId, defaultMessage, value, options = [] }) => {
 const ReadOnlyCheckbox = ({ labelId, defaultMessage, checked }) => {
   const intl = useIntl();
   return (
-    <Column lg={8} md={4} sm={4} style={{ marginBottom: "1rem" }}>
+    <Column lg={8} md={8} sm={4} style={{ marginBottom: "1rem" }}>
       <Checkbox
         id={labelId + "_cb"}
         labelText={intl.formatMessage({
@@ -153,7 +153,7 @@ const DemographicsBlock = ({ formData }) => (
 // Initial ARV sub-form
 // ─────────────────────────────────────────────────────────────────────────────
 const InitialARVForm = ({ formData, obs, lists }) => (
-  <Grid fullWidth>
+  <>
     <DemographicsBlock formData={formData} />
 
     <ReadOnlySelect
@@ -262,14 +262,14 @@ const InitialARVForm = ({ formData, obs, lists }) => (
       value={obs.underInvestigation}
       options={lists.yesNo || []}
     />
-  </Grid>
+  </>
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Follow-up ARV sub-form
 // ─────────────────────────────────────────────────────────────────────────────
 const FollowupARVForm = ({ formData, obs, lists }) => (
-  <Grid fullWidth>
+  <>
     <DemographicsBlock formData={formData} />
 
     <ReadOnlySelect
@@ -413,14 +413,14 @@ const FollowupARVForm = ({ formData, obs, lists }) => (
       value={obs.underInvestigation}
       options={lists.yesNo || []}
     />
-  </Grid>
+  </>
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EID sub-form
 // ─────────────────────────────────────────────────────────────────────────────
 const EIDForm = ({ formData, obs, projectData, lists }) => (
-  <Grid fullWidth>
+  <>
     <DemographicsBlock formData={formData} />
 
     <ReadOnlyField
@@ -524,14 +524,14 @@ const EIDForm = ({ formData, obs, projectData, lists }) => (
       defaultMessage="DBS Taken"
       checked={projectData.dbsTaken}
     />
-  </Grid>
+  </>
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Viral Load sub-form
 // ─────────────────────────────────────────────────────────────────────────────
 const VLForm = ({ formData, obs, projectData, lists }) => (
-  <Grid fullWidth>
+  <>
     <DemographicsBlock formData={formData} />
 
     <ReadOnlySelect
@@ -714,14 +714,14 @@ const VLForm = ({ formData, obs, projectData, lists }) => (
       value={obs.underInvestigation}
       options={lists.yesNo || []}
     />
-  </Grid>
+  </>
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RTN sub-form
 // ─────────────────────────────────────────────────────────────────────────────
 const RTNForm = ({ formData, obs, projectData, lists }) => (
-  <Grid fullWidth>
+  <>
     <DemographicsBlock formData={formData} />
 
     <ReadOnlyField
@@ -803,14 +803,14 @@ const RTNForm = ({ formData, obs, projectData, lists }) => (
       defaultMessage="Under Investigation Note"
       value={projectData.underInvestigationNote}
     />
-  </Grid>
+  </>
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Recency (RT) sub-form
 // ─────────────────────────────────────────────────────────────────────────────
 const RecencyForm = ({ formData, obs, projectData, lists }) => (
-  <Grid fullWidth>
+  <>
     <DemographicsBlock formData={formData} />
 
     <ReadOnlySelect
@@ -877,7 +877,7 @@ const RecencyForm = ({ formData, obs, projectData, lists }) => (
       defaultMessage="Asante Test"
       checked={projectData.asanteTest}
     />
-  </Grid>
+  </>
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1087,6 +1087,14 @@ const PatientStudyForm = ({
               <SelectItem
                 key={st.id}
                 value={st.id}
+                disabled={
+                  st.id !==
+                  (formData?.observations?.projectFormName
+                    ? PROJECT_FORM_NAME_TO_ID[
+                        formData.observations.projectFormName
+                      ]
+                    : "")
+                }
                 text={intl.formatMessage({
                   id: st.labelId,
                   defaultMessage: st.defaultMessage,
