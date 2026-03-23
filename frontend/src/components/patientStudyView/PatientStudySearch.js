@@ -26,14 +26,27 @@ import CustomDatePicker from "../common/CustomDatePicker";
 const SCROLL_OFFSET = 50;
 
 const SEARCH_CRITERIA_OPTIONS = [
-  { id: "1", labelKey: "patient.epiFirstName", defaultMessage: "First Name" },
-  { id: "2", labelKey: "patient.epiLastName", defaultMessage: "Last Name" },
+  { id: "2", labelKey: "label.select.last.name", defaultMessage: "Last Name" },
+  {
+    id: "1",
+    labelKey: "label.select.first.name",
+    defaultMessage: "First Name",
+  },
+  {
+    id: "3",
+    labelKey: "label.select.last.first.name",
+    defaultMessage: "Last, First Name",
+  },
   {
     id: "4",
-    labelKey: "patient.search.nationalId",
-    defaultMessage: "National ID / Subject No.",
+    labelKey: "label.select.patient.ID",
+    defaultMessage: "Patient Identification Code",
   },
-  { id: "5", labelKey: "patient.labNo", defaultMessage: "Lab Number" },
+  {
+    id: "5",
+    labelKey: "quick.entry.accession.number",
+    defaultMessage: "Lab No",
+  },
 ];
 
 function noop() {}
@@ -49,7 +62,7 @@ const PatientStudySearch = ({
   const { notificationVisible, setNotificationVisible, addNotification } =
     useContext(NotificationContext);
 
-  const [searchCriteria, setSearchCriteria] = useState("2");
+  const [searchCriteria, setSearchCriteria] = useState("0");
   const [searchValue, setSearchValue] = useState("");
   const [dob, setDob] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -68,9 +81,16 @@ const PatientStudySearch = ({
       case "2":
         params.lastName = trimmed;
         break;
+      case "3": {
+        const parts = trimmed.split(",");
+        params.lastName = parts[0] ? parts[0].trim() : "";
+        params.firstName = parts[1] ? parts[1].trim() : "";
+        break;
+      }
       case "4":
-        params.nationalID = trimmed;
+        params.STNumber = trimmed;
         params.subjectNumber = trimmed;
+        params.nationalID = trimmed;
         break;
       case "5":
         params.labNumber = trimmed;
@@ -89,6 +109,19 @@ const PatientStudySearch = ({
   const handleSearch = () => {
     const isCriteriaLabNo = searchCriteria === "5";
     const minLength = isCriteriaLabNo ? 3 : 1;
+
+    if (searchCriteria === "0" || !searchCriteria) {
+      addNotification({
+        kind: NotificationKinds.warning,
+        title: intl.formatMessage({ id: "notification.title" }),
+        message: intl.formatMessage({
+          id: "patient.search.criteria",
+          defaultMessage: "Please select a search criteria",
+        }),
+      });
+      setNotificationVisible(true);
+      return;
+    }
 
     if (!searchValue.trim() || searchValue.trim().length < minLength) {
       addNotification({
@@ -274,12 +307,19 @@ const PatientStudySearch = ({
         <Select
           id="searchCriteria"
           labelText={intl.formatMessage({
-            id: "patient.search.criteria",
+            id: "label.select.search.by",
             defaultMessage: "Search By",
           })}
           value={searchCriteria}
           onChange={(e) => setSearchCriteria(e.target.value)}
         >
+          <SelectItem
+            value="0"
+            text={intl.formatMessage({
+              id: "label.select.search.by",
+              defaultMessage: "Search by...",
+            })}
+          />
           {SEARCH_CRITERIA_OPTIONS.map((opt) => (
             <SelectItem
               key={opt.id}
