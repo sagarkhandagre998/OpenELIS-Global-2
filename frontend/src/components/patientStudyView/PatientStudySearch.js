@@ -21,7 +21,6 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { getFromOpenElisServer } from "../utils/Utils";
 import { NotificationContext } from "../layout/Layout";
 import { NotificationKinds, AlertDialog } from "../common/CustomNotification";
-import CustomDatePicker from "../common/CustomDatePicker";
 
 const SCROLL_OFFSET = 50;
 
@@ -64,7 +63,6 @@ const PatientStudySearch = ({
 
   const [searchCriteria, setSearchCriteria] = useState("0");
   const [searchValue, setSearchValue] = useState("");
-  const [dob, setDob] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchCompleted, setSearchCompleted] = useState(false);
@@ -97,10 +95,6 @@ const PatientStudySearch = ({
         break;
       default:
         params.lastName = trimmed;
-    }
-
-    if (dob) {
-      params.dateOfBirth = dob;
     }
 
     return new URLSearchParams(params).toString();
@@ -185,23 +179,11 @@ const PatientStudySearch = ({
     setSelectedPatientId(patientId);
   };
 
-  const handleViewPatient = () => {
-    if (!selectedPatientId) {
-      addNotification({
-        kind: NotificationKinds.warning,
-        title: intl.formatMessage({ id: "notification.title" }),
-        message: intl.formatMessage({
-          id: "patient.select.required",
-          defaultMessage: "Please select a patient",
-        }),
-      });
-      setNotificationVisible(true);
-      return;
-    }
-
+  const loadPatientById = (patientId) => {
+    if (!patientId) return;
     setLoading(true);
     getFromOpenElisServer(
-      "/rest/patient-study-view?patientID=" + selectedPatientId,
+      "/rest/patient-study-view?patientID=" + patientId,
       (response) => {
         setLoading(false);
         if (!response) {
@@ -216,15 +198,12 @@ const PatientStudySearch = ({
           setNotificationVisible(true);
           return;
         }
-
         const patient = searchResults.find(
-          (p) => String(p.patientID) === String(selectedPatientId),
+          (p) => String(p.patientID) === String(patientId),
         );
         setSelectedPatient(patient || null);
         setFormData(response.formData || {});
         setReferenceLists(response.referenceLists || {});
-
-        // Scroll down to the form
         if (formRef?.current) {
           window.scrollTo({
             top: formRef.current.offsetTop - SCROLL_OFFSET,
@@ -234,6 +213,26 @@ const PatientStudySearch = ({
         }
       },
     );
+  };
+
+  const handleViewPatientById = (patientId) => {
+    loadPatientById(patientId);
+  };
+
+  const handleViewPatient = () => {
+    if (!selectedPatientId) {
+      addNotification({
+        kind: NotificationKinds.warning,
+        title: intl.formatMessage({ id: "notification.title" }),
+        message: intl.formatMessage({
+          id: "patient.select.required",
+          defaultMessage: "Please select a patient",
+        }),
+      });
+      setNotificationVisible(true);
+      return;
+    }
+    loadPatientById(selectedPatientId);
   };
 
   const handleKeyDown = (e) => {
@@ -282,6 +281,20 @@ const PatientStudySearch = ({
         defaultMessage: "National ID",
       }),
     },
+    {
+      key: "subjectNumber",
+      header: intl.formatMessage({
+        id: "patient.subject.number",
+        defaultMessage: "Subject Number",
+      }),
+    },
+    {
+      key: "stNumber",
+      header: intl.formatMessage({
+        id: "patient.ST.number",
+        defaultMessage: "ST Number",
+      }),
+    },
   ];
 
   const searchResultRows = searchResults.map((patient, index) => ({
@@ -292,6 +305,8 @@ const PatientStudySearch = ({
     gender: patient.gender || "",
     dob: patient.dateOfBirth || "",
     nationalId: patient.nationalId || "",
+    subjectNumber: patient.subjectNumber || "",
+    stNumber: patient.stNumber || "",
   }));
 
   return (
@@ -351,23 +366,10 @@ const PatientStudySearch = ({
         />
       </Column>
 
-      {/* Date of birth picker */}
-      <Column lg={3} md={2} sm={4}>
-        <CustomDatePicker
-          id="patientSearchDob"
-          labelText={intl.formatMessage({
-            id: "patient.birthDate",
-            defaultMessage: "Date of Birth",
-          })}
-          value={dob}
-          onChange={(date) => setDob(date)}
-        />
-      </Column>
-
       {/* Search button */}
       <Column
-        lg={3}
-        md={1}
+        lg={4}
+        md={2}
         sm={4}
         style={{ display: "flex", alignItems: "flex-end" }}
       >
@@ -415,12 +417,11 @@ const PatientStudySearch = ({
                     {rows.map((row) => (
                       <TableRow
                         key={row.id}
-                        onClick={() =>
-                          handlePatientSelect(
-                            row.cells.find((c) => c.info.header === "select")
-                              ?.value,
-                          )
-                        }
+                        onClick={() => {
+                          const pid = row.cells.find((c) => c.info.header === "select")?.value;
+                          handlePatientSelect(pid);
+                          handleViewPatientById(pid);
+                        }}
                         style={{
                           cursor: "pointer",
                           backgroundColor:

@@ -1283,7 +1283,7 @@ const PatientStudyForm = ({
           </Column>
         )}
 
-        {/* Study type selector */}
+        {/* Study type selector — read-only once patient data is loaded (mirrors JSP readonly mode) */}
         <Column lg={6} md={4} sm={4} style={{ marginBottom: "1rem" }}>
           <Select
             id="studyTypeSelector"
@@ -1292,6 +1292,7 @@ const PatientStudyForm = ({
               defaultMessage: "Study Form",
             })}
             value={selectedStudyType}
+            disabled={!!formData && !!formData.observations && !!formData.observations.projectFormName}
             onChange={(e) => setSelectedStudyType(e.target.value)}
           >
             <SelectItem value="" text="" />
@@ -1299,14 +1300,6 @@ const PatientStudyForm = ({
               <SelectItem
                 key={st.id}
                 value={st.id}
-                disabled={
-                  st.id !==
-                  (formData?.observations?.projectFormName
-                    ? PROJECT_FORM_NAME_TO_ID[
-                        formData.observations.projectFormName
-                      ]
-                    : "")
-                }
                 text={intl.formatMessage({
                   id: st.labelId,
                   defaultMessage: st.defaultMessage,
