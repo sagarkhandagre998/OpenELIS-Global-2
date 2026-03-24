@@ -320,6 +320,12 @@ public class PatientStudyViewRestController extends BaseController {
                 priorARVTreatmentINNsList.add(getOHValue(ohByTypeId, "priorARVTreatmentINNs" + i));
             }
             observations.put("priorARVTreatmentINNsList", priorARVTreatmentINNsList);
+            // futureARVTreatmentINNsList: up to 4 prescribed ARV INN entries
+            List<String> futureARVTreatmentINNsList = new ArrayList<>();
+            for (int i = 0; i < 4; i++) {
+                futureARVTreatmentINNsList.add(getOHValue(ohByTypeId, "futureARVTreatmentINNs" + i));
+            }
+            observations.put("futureARVTreatmentINNsList", futureARVTreatmentINNsList);
             observations.put("vlPregnancy", getOHValue(ohByTypeId, OHT_VL_PREGNANCY));
             observations.put("vlSuckle", getOHValue(ohByTypeId, OHT_VL_SUCKLE));
             observations.put("vlReasonForRequest", getOHValue(ohByTypeId, OHT_VL_REASON));
@@ -410,6 +416,20 @@ public class PatientStudyViewRestController extends BaseController {
         lists.put("currentDiseasesList", diseasePairsToList(tmpObs.getCurrentDiseasesList()));
         lists.put("rtnPriorDiseasesList", diseasePairsToList(tmpObs.getRtnPriorDiseasesList()));
         lists.put("rtnCurrentDiseasesList", diseasePairsToList(tmpObs.getRtnCurrentDiseasesList()));
+        lists.put("yesNoUnknown", dictionaryListToIdValuePairs(ObservationHistoryList.YES_NO_UNKNOWN));
+        lists.put("yesNoNa", dictionaryListToIdValuePairs(ObservationHistoryList.YES_NO_NA));
+        lists.put("arvProphylaxis2", dictionaryListToIdValuePairs(ObservationHistoryList.ARV_PROPHYLAXIS_2));
+        lists.put("arvReasonForVlDemand", dictionaryListToIdValuePairs(ObservationHistoryList.ARV_REASON_FOR_VL_DEMAND));
+        lists.put("eidWhichPcr", dictionaryListToIdValuePairs(ObservationHistoryList.EID_WHICH_PCR));
+        lists.put("eidSecondPcrReason", dictionaryListToIdValuePairs(ObservationHistoryList.EID_SECOND_PCR_REASON));
+        lists.put("eidTypeOfClinic", dictionaryListToIdValuePairs(ObservationHistoryList.EID_TYPE_OF_CLINIC));
+        lists.put("eidHowChildFed", dictionaryListToIdValuePairs(ObservationHistoryList.EID_HOW_CHILD_FED));
+        lists.put("eidStoppedBreastfeeding", dictionaryListToIdValuePairs(ObservationHistoryList.EID_STOPPED_BREASTFEEDING));
+        lists.put("eidMothersHivStatus", dictionaryListToIdValuePairs(ObservationHistoryList.EID_MOTHERS_HIV_STATUS));
+        lists.put("eidMothersArvTreatment", dictionaryListToIdValuePairs(ObservationHistoryList.EID_MOTHERS_ARV_TREATMENT));
+        lists.put("eidInfantProphylaxisArv", dictionaryListToIdValuePairs(ObservationHistoryList.EID_INFANT_PROPHYLAXIS_ARV));
+        lists.put("eidOrgs", organizationListToMap(OrganizationTypeList.EID_ORGS));
+        lists.put("eidOrgsByName", organizationListToMap(OrganizationTypeList.EID_ORGS_BY_NAME));
 
         return lists;
     }

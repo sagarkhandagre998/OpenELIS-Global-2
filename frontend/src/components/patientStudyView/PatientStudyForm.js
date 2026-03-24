@@ -382,6 +382,11 @@ const FollowupARVForm = ({ formData, obs, projectData, lists }) => (
       defaultMessage="Karnofsky Score"
       value={obs.karnofskyScore}
     />
+    <ReadOnlyField
+      labelId="patient.age"
+      defaultMessage="Age (years)"
+      value={formData.age}
+    />
     <ReadOnlySelect
       labelId="patient.project.hivStatus"
       defaultMessage="HIV Status"
@@ -437,19 +442,19 @@ const FollowupARVForm = ({ formData, obs, projectData, lists }) => (
       labelId="patient.project.interruptedARVTreatment"
       defaultMessage="Interrupted ARV Treatment"
       value={obs.interruptedARVTreatment}
-      options={lists.yesNo || []}
+      options={lists.yesNoNa || []}
     />
     <ReadOnlySelect
       labelId="patient.project.arvTreatmentChange"
       defaultMessage="ARV Treatment Change"
       value={obs.arvTreatmentChange}
-      options={lists.yesNo || []}
+      options={lists.yesNoNa || []}
     />
     <ReadOnlySelect
       labelId="patient.project.arvTreatmentNew"
       defaultMessage="New ARV Treatment"
       value={obs.arvTreatmentNew}
-      options={lists.yesNo || []}
+      options={lists.yesNoNa || []}
     />
     <ReadOnlySelect
       labelId="patient.project.arvTreatmentRegime"
@@ -462,6 +467,14 @@ const FollowupARVForm = ({ formData, obs, projectData, lists }) => (
       defaultMessage="ARV Treatment Init Date"
       value={obs.arvTreatmentInitDate}
     />
+    {(obs.futureARVTreatmentINNsList || []).filter(Boolean).map((inn, i) => (
+      <ReadOnlyField
+        key={i}
+        labelId="patient.project.prescribedARVTreatmentINNs"
+        defaultMessage="Prescribed ARV INN"
+        value={inn}
+      />
+    ))}
     <ReadOnlySelect
       labelId="patient.project.treatmentAnyAdverseEffects"
       defaultMessage="Any Adverse Effects"
@@ -472,7 +485,7 @@ const FollowupARVForm = ({ formData, obs, projectData, lists }) => (
       labelId="patient.project.cotrimoxazoleTreatment"
       defaultMessage="Cotrimoxazole Treatment"
       value={obs.cotrimoxazoleTreatment}
-      options={lists.yesNo || []}
+      options={lists.yesNoNa || []}
     />
     <ReadOnlySelect
       labelId="patient.project.anySecondaryTreatment"
@@ -514,7 +527,7 @@ const FollowupARVForm = ({ formData, obs, projectData, lists }) => (
       labelId="patient.project.cotrimoxazoleTreatAnyAdvEff"
       defaultMessage="Cotrimoxazole Any Adverse Effects"
       value={obs.cotrimoxazoleTreatmentAnyAdverseEffects}
-      options={lists.yesNo || []}
+      options={lists.yesNoNa || []}
     />
     <ReadOnlySelect
       labelId="patient.project.currentDiseases"
@@ -548,15 +561,17 @@ const EIDForm = ({ formData, obs, projectData, lists }) => (
   <>
     <DemographicsBlock formData={formData} />
 
-    <ReadOnlyField
+    <ReadOnlySelect
       labelId="sample.entry.project.EID.siteName"
       defaultMessage="Site Name"
       value={projectData.EIDsiteName}
+      options={lists.eidOrgsByName || []}
     />
-    <ReadOnlyField
+    <ReadOnlySelect
       labelId="sample.entry.project.EID.siteCode"
       defaultMessage="Site Code"
       value={projectData.EIDsiteCode}
+      options={lists.eidOrgs || []}
     />
     <ReadOnlyField
       labelId="patient.project.nameOfRequestor"
@@ -587,7 +602,7 @@ const EIDForm = ({ formData, obs, projectData, lists }) => (
       labelId="patient.project.eidTypeOfClinic"
       defaultMessage="Type of Clinic"
       value={obs.eidTypeOfClinic}
-      options={lists.yesNo || []}
+      options={lists.eidTypeOfClinic || []}
     />
     <ReadOnlyField
       labelId="patient.project.eidTypeOfClinicOther"
@@ -598,13 +613,13 @@ const EIDForm = ({ formData, obs, projectData, lists }) => (
       labelId="patient.project.eidHowChildFed"
       defaultMessage="How Child Fed"
       value={obs.eidHowChildFed}
-      options={lists.yesNo || []}
+      options={lists.eidHowChildFed || []}
     />
     <ReadOnlySelect
       labelId="patient.project.eidStoppedBreastfeeding"
       defaultMessage="Stopped Breastfeeding"
       value={obs.eidStoppedBreastfeeding}
-      options={lists.yesNo || []}
+      options={lists.eidStoppedBreastfeeding || []}
     />
     <ReadOnlySelect
       labelId="patient.project.eidInfantSymptomatic"
@@ -616,25 +631,25 @@ const EIDForm = ({ formData, obs, projectData, lists }) => (
       labelId="patient.project.eidMothersStatus"
       defaultMessage="Mother's HIV Status"
       value={obs.eidMothersHIVStatus}
-      options={lists.yesNo || []}
+      options={lists.eidMothersHivStatus || []}
     />
     <ReadOnlySelect
       labelId="patient.project.eidMothersARV"
       defaultMessage="Mother's ARV"
       value={obs.eidMothersARV}
-      options={lists.yesNo || []}
+      options={lists.eidMothersArvTreatment || []}
     />
     <ReadOnlySelect
       labelId="patient.project.eidInfantProphy"
       defaultMessage="Infant ARV"
       value={obs.eidInfantsARV}
-      options={lists.yesNo || []}
+      options={lists.eidInfantProphylaxisArv || []}
     />
     <ReadOnlySelect
       labelId="patient.project.eidInfantCotrimoxazole"
       defaultMessage="Infant Cotrimoxazole"
       value={obs.eidInfantCotrimoxazole}
-      options={lists.yesNo || []}
+      options={lists.yesNoUnknown || []}
     />
     <ReadOnlySelect
       labelId="patient.project.eidBenefitPTME"
@@ -651,13 +666,13 @@ const EIDForm = ({ formData, obs, projectData, lists }) => (
       labelId="patient.project.eidWhichPCR"
       defaultMessage="Which PCR"
       value={obs.whichPCR}
-      options={lists.yesNo || []}
+      options={lists.eidWhichPcr || []}
     />
     <ReadOnlySelect
       labelId="sample.entry.project.EID.reasonForPCRTest"
       defaultMessage="Reason for Second PCR"
       value={obs.reasonForSecondPCRTest}
-      options={lists.yesNo || []}
+      options={lists.eidSecondPcrReason || []}
     />
 
     <SectionHeading
@@ -776,7 +791,7 @@ const VLForm = ({ formData, obs, projectData, lists }) => (
       labelId="sample.entry.project.vl.reason"
       defaultMessage="Reason for VL Request"
       value={obs.vlReasonForRequest}
-      options={lists.yesNo || []}
+      options={lists.arvReasonForVlDemand || []}
     />
     <ReadOnlyField
       labelId="patient.project.specify"
@@ -908,7 +923,7 @@ const RTNForm = ({ formData, obs, projectData, lists }) => (
     <ReadOnlySelect
       labelId="patient.project.hospitals"
       defaultMessage="Hospital"
-      value={formData.centerCode}
+      value={obs.hospitalPatient}
       options={lists.rtnHospitals || []}
     />
     <ReadOnlySelect
@@ -922,6 +937,11 @@ const RTNForm = ({ formData, obs, projectData, lists }) => (
       defaultMessage="Hospitalized Patient"
       value={obs.hospitalPatient}
       options={lists.yesNo || []}
+    />
+    <ReadOnlyField
+      labelId="patient.project.nameOfDoctor"
+      defaultMessage="Name of Doctor"
+      value={obs.nameOfDoctor}
     />
     <ReadOnlySelect
       labelId="patient.project.nationality"
@@ -990,10 +1010,16 @@ const RecencyForm = ({ formData, obs, projectData, lists }) => (
     <DemographicsBlock formData={formData} />
 
     <ReadOnlySelect
+      labelId="sample.entry.project.ARV.centerName"
+      defaultMessage="Center Name"
+      value={projectData.ARVcenterName}
+      options={lists.arvOrgsByName || []}
+    />
+    <ReadOnlySelect
       labelId="patient.project.centerCode"
       defaultMessage="Center Code"
       value={projectData.ARVcenterCode}
-      options={lists.arvOrgsByName || []}
+      options={lists.arvOrgs || []}
     />
     <ReadOnlyField
       labelId="sample.entry.project.receivedTime"
