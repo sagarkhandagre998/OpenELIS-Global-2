@@ -1262,6 +1262,7 @@ const PatientStudyForm = ({
         {selectedPatient && (
           <Column lg={16} md={8} sm={4} style={{ marginBottom: "1rem" }}>
             <div
+              data-testid="patient-banner"
               style={{
                 padding: "1rem",
                 backgroundColor: "#f4f4f4",

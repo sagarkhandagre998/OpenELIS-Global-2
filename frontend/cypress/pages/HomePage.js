@@ -14,6 +14,7 @@ import StudyReportPage from "./StudyReportPage";
 import DashBoardPage from "./DashBoard";
 import AdminPage from "./AdminPage";
 import HelpPage from "./HelpPage";
+import PatientStudyViewPage from "./PatientStudyViewPage";
 
 class HomePage {
   constructor() {
@@ -25,6 +26,7 @@ class HomePage {
       patientMenu: "span#menu_patient",
       patientAddEdit: "#menu_patient_add_or_edit_nav",
       patientMerge: "#menu_patient_merge",
+      patientStudyView: "#menu_patient_consult_react_nav",
       sampleEditNav: "#menu_sample_edit_nav",
       workplanMenu: "span#menu_workplan",
       workplanTestNav: "#menu_workplan_test_nav",
@@ -125,6 +127,16 @@ class HomePage {
     cy.get(this.selectors.patientMenu).click();
     cy.get(this.selectors.patientAddEdit).click();
     return new PatientEntryPage();
+  }
+
+  // Patient Study View
+  goToPatientStudyView() {
+    this.openNavigationMenu();
+    cy.get(this.selectors.patientMenu).click();
+    cy.get(this.selectors.patientStudyView)
+      .should("exist")
+      .click({ force: true });
+    return new PatientStudyViewPage();
   }
 
   // Patient Merge (Admin function)

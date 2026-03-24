@@ -280,14 +280,14 @@ const PatientStudySearch = ({
     {
       key: "subjectNumber",
       header: intl.formatMessage({
-        id: "patient.subject.number",
+        id: "eorder.id.subjectNumber",
         defaultMessage: "Subject Number",
       }),
     },
     {
       key: "stNumber",
       header: intl.formatMessage({
-        id: "patient.ST.number",
+        id: "patient.st.number",
         defaultMessage: "ST Number",
       }),
     },
