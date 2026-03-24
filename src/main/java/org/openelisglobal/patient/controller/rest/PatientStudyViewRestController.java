@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.validator.GenericValidator;
-import org.openelisglobal.common.controller.BaseController;
+import org.openelisglobal.common.rest.BaseRestController;
 import org.openelisglobal.common.log.LogEvent;
 import org.openelisglobal.common.services.DisplayListService;
 import org.openelisglobal.common.services.DisplayListService.ListType;
@@ -49,7 +49,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping(value = "/rest/")
-public class PatientStudyViewRestController extends BaseController {
+public class PatientStudyViewRestController extends BaseRestController {
 
     // ── Observation-history type names as stored in
     // observation_history_type.type_name ──
@@ -221,6 +221,26 @@ public class PatientStudyViewRestController extends BaseController {
                 }
             }
 
+
+            // Collect all unique projectFormName values across every sample for this patient
+            List<String> availableStudyTypes = new ArrayList<>();
+            if (samples != null) {
+                ObservationHistoryType pfnType = observationHistoryTypeService.getByName(OHT_PROJECT_FORM_NAME);
+                if (pfnType != null) {
+                    for (Sample sample : samples) {
+                        List<ObservationHistory> sampleOhs = observationHistoryService.getObservationHistoriesBySampleId(sample.getId());
+                        if (sampleOhs != null) {
+                            for (ObservationHistory oh : sampleOhs) {
+                                if (pfnType.getId().equals(oh.getObservationHistoryTypeId())
+                                        && oh.getValue() != null && !oh.getValue().isEmpty()
+                                        && !availableStudyTypes.contains(oh.getValue())) {
+                                    availableStudyTypes.add(oh.getValue());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             Map<String, Object> formData = new HashMap<>();
 
             // ── Demographics ──────────────────────────────────────────────────────────
@@ -367,6 +387,7 @@ public class PatientStudyViewRestController extends BaseController {
             projectData.put("ARVcenterCode", getOHValue(ohByTypeId, OHT_ARV_CENTER_CODE));
             projectData.put("ARVcenterName", getOHValue(ohByTypeId, OHT_ARV_CENTER_NAME));
             formData.put("projectData", projectData);
+            formData.put("availableStudyTypes", availableStudyTypes);
 
             response.put("formData", formData);
             return ResponseEntity.ok(response);
@@ -520,22 +541,4 @@ public class PatientStudyViewRestController extends BaseController {
         return ("true".equalsIgnoreCase(val) || "Y".equalsIgnoreCase(val) || "1".equals(val));
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    // BaseController stubs
-    // ─────────────────────────────────────────────────────────────────────────────
-
-    @Override
-    protected String findLocalForward(String forward) {
-        return "PageNotFound";
-    }
-
-    @Override
-    protected String getPageTitleKey() {
-        return "banner.menu.editPatient.ReadOnly";
-    }
-
-    @Override
-    protected String getPageSubtitleKey() {
-        return "banner.menu.editPatient.ReadOnly";
-    }
 }
