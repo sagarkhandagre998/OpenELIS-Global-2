@@ -1157,8 +1157,16 @@ const PatientStudyForm = ({
       const pfn = formData.observations.projectFormName;
       if (pfn && PROJECT_FORM_NAME_TO_ID[pfn]) {
         setSelectedStudyType(PROJECT_FORM_NAME_TO_ID[pfn]);
+      } else {
+        setSelectedStudyType("");
       }
     }
+  }, [formData]);
+
+  // Derive available study types from the list returned by the backend
+  const availableStudyTypes = React.useMemo(() => {
+    if (!formData || !formData.availableStudyTypes) return null;
+    return formData.availableStudyTypes;
   }, [formData]);
 
   if (loading) {
@@ -1292,11 +1300,14 @@ const PatientStudyForm = ({
               defaultMessage: "Study Form",
             })}
             value={selectedStudyType}
-            disabled={!!formData && !!formData.observations && !!formData.observations.projectFormName}
+            disabled={false}
             onChange={(e) => setSelectedStudyType(e.target.value)}
           >
             <SelectItem value="" text="" />
-            {STUDY_TYPES.map((st) => (
+            {STUDY_TYPES.filter(
+              (st) =>
+                !availableStudyTypes || availableStudyTypes.includes(st.id),
+            ).map((st) => (
               <SelectItem
                 key={st.id}
                 value={st.id}

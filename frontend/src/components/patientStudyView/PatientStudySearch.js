@@ -215,10 +215,6 @@ const PatientStudySearch = ({
     );
   };
 
-  const handleViewPatientById = (patientId) => {
-    loadPatientById(patientId);
-  };
-
   const handleViewPatient = () => {
     if (!selectedPatientId) {
       addNotification({
@@ -418,9 +414,10 @@ const PatientStudySearch = ({
                       <TableRow
                         key={row.id}
                         onClick={() => {
-                          const pid = row.cells.find((c) => c.info.header === "select")?.value;
+                          const pid = row.cells.find(
+                            (c) => c.info.header === "select",
+                          )?.value;
                           handlePatientSelect(pid);
-                          handleViewPatientById(pid);
                         }}
                         style={{
                           cursor: "pointer",
