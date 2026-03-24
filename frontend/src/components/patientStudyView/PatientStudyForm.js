@@ -177,7 +177,7 @@ const InitialARVForm = ({ formData, obs, projectData, lists }) => (
       labelId="patient.project.hivStatus"
       defaultMessage="HIV Status"
       value={obs.hivStatus}
-      options={lists.hivTypes || []}
+      options={lists.hivStatuses || []}
     />
     <ReadOnlySelect
       labelId="patient.project.educationLevel"
@@ -254,8 +254,16 @@ const InitialARVForm = ({ formData, obs, projectData, lists }) => (
       labelId="patient.project.priorARVTreatment"
       defaultMessage="Prior ARV Treatment"
       value={obs.priorARVTreatment}
-      options={lists.yesNo || []}
+      options={lists.yesNoUnknownNaNotSpec || []}
     />
+    {(obs.priorARVTreatmentINNsList || []).filter(Boolean).map((inn, i) => (
+      <ReadOnlyField
+        key={i}
+        labelId="patient.project.priorARVInn"
+        defaultMessage="Prior ARV INN"
+        value={inn}
+      />
+    ))}
     <ReadOnlySelect
       labelId="patient.project.priorDiseases"
       defaultMessage="Prior Diseases (Other)"
@@ -309,7 +317,7 @@ const InitialARVForm = ({ formData, obs, projectData, lists }) => (
       labelId="patient.project.currentOITreatment"
       defaultMessage="Current OI Treatment"
       value={obs.currentOITreatment}
-      options={lists.yesNo || []}
+      options={lists.yesNoUnknownNaNotSpec || []}
     />
     <ReadOnlyField
       labelId="patient.project.patientWeight"
@@ -320,6 +328,11 @@ const InitialARVForm = ({ formData, obs, projectData, lists }) => (
       labelId="patient.project.karnofskyScore"
       defaultMessage="Karnofsky Score"
       value={obs.karnofskyScore}
+    />
+    <ReadOnlyField
+      labelId="patient.age"
+      defaultMessage="Age (years)"
+      value={formData.age}
     />
     <ReadOnlySelect
       labelId="patient.project.underInvestigation"
@@ -481,8 +494,16 @@ const FollowupARVForm = ({ formData, obs, projectData, lists }) => (
       labelId="patient.project.priorARVTreatment"
       defaultMessage="Prior ARV Treatment"
       value={obs.priorARVTreatment}
-      options={lists.yesNo || []}
+      options={lists.yesNoUnknownNaNotSpec || []}
     />
+    {(obs.priorARVTreatmentINNsList || []).filter(Boolean).map((inn, i) => (
+      <ReadOnlyField
+        key={i}
+        labelId="patient.project.priorARVInn"
+        defaultMessage="Prior ARV INN"
+        value={inn}
+      />
+    ))}
     <ReadOnlySelect
       labelId="patient.project.antiTbTreatment"
       defaultMessage="Anti-TB Treatment"

@@ -244,12 +244,25 @@ public class PatientStudyViewRestController extends BaseController {
                 formData.put("receivedTimeForDisplay", "");
             }
 
+            // ── Age (calculated from date of birth) ──────────────────────────────────
+            if (patient.getBirthDate() != null) {
+                int age = java.time.Period.between(patient.getBirthDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate(), java.time.LocalDate.now()).getYears();
+                formData.put("age", String.valueOf(age));
+            } else {
+                formData.put("age", "");
+            }
+
             // ── Observation history fields (keyed by type name) ───────────────────────
             formData.put("subjectNumber", getOHValue(ohByTypeId, OHT_SUBJECT_NUMBER));
             formData.put("siteSubjectNumber", getOHValue(ohByTypeId, OHT_SITE_SUBJECT_NUMBER));
             formData.put("upidCode", getOHValue(ohByTypeId, OHT_UPID_CODE));
-            formData.put("centerCode", getOHValue(ohByTypeId, OHT_CENTER_CODE));
-            formData.put("centerName", getOHValue(ohByTypeId, OHT_CENTER_NAME));
+            // centerCode/centerName: prefer generic OH value; fall back to ARV-specific keys
+            String centerCode = getOHValue(ohByTypeId, OHT_CENTER_CODE);
+            if (centerCode.isEmpty()) { centerCode = getOHValue(ohByTypeId, OHT_ARV_CENTER_CODE); }
+            formData.put("centerCode", centerCode);
+            String centerName = getOHValue(ohByTypeId, OHT_CENTER_NAME);
+            if (centerName.isEmpty()) { centerName = getOHValue(ohByTypeId, OHT_ARV_CENTER_NAME); }
+            formData.put("centerName", centerName);
             formData.put("interviewDate", getOHValue(ohByTypeId, OHT_INTERVIEW_DATE));
             formData.put("interviewTime", getOHValue(ohByTypeId, OHT_INTERVIEW_TIME));
 
@@ -301,6 +314,12 @@ public class PatientStudyViewRestController extends BaseController {
             observations.put("secondaryTreatment", getOHValue(ohByTypeId, OHT_SECONDARY_TREATMENT));
             observations.put("clinicVisits", getOHValue(ohByTypeId, OHT_CLINIC_VISITS));
             observations.put("underInvestigation", getOHValue(ohByTypeId, OHT_UNDER_INVESTIGATION));
+            // priorARVTreatmentINNsList: up to 4 free-text INN entries stored per index
+            List<String> priorARVTreatmentINNsList = new ArrayList<>();
+            for (int i = 0; i < 4; i++) {
+                priorARVTreatmentINNsList.add(getOHValue(ohByTypeId, "priorARVTreatmentINNs" + i));
+            }
+            observations.put("priorARVTreatmentINNsList", priorARVTreatmentINNsList);
             observations.put("vlPregnancy", getOHValue(ohByTypeId, OHT_VL_PREGNANCY));
             observations.put("vlSuckle", getOHValue(ohByTypeId, OHT_VL_SUCKLE));
             observations.put("vlReasonForRequest", getOHValue(ohByTypeId, OHT_VL_REASON));
