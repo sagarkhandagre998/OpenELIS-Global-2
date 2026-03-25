@@ -70,6 +70,7 @@ import { Roles } from "./components/utils/Utils";
 import NoteBookInstanceEntryForm from "./components/notebook/NoteBookInstanceEntryForm.js";
 import NotebookSampleOrder from "./components/notebook/NotebookSampleOrder.js";
 import PatientStudyView from "./components/patientStudyView/PatientStudyView";
+import PatientStudyEditView from "./components/patientStudyEdit/PatientStudyEditView";
 import FreezerMonitoringDashboard from "./components/coldStorage/FreezerMonitoringDashboard";
 import ProgramDashboard from "./components/program/programDashboard.jsx";
 import ProgramCaseView from "./components/program/programCaseView.jsx";
@@ -513,6 +514,12 @@ export default function App() {
                   path="/PatientStudyView"
                   exact
                   component={() => <PatientStudyView />}
+                  role={Roles.RECEPTION}
+                />
+                <SecureRoute
+                  path="/PatientStudyEdit"
+                  exact
+                  component={() => <PatientStudyEditView />}
                   role={Roles.RECEPTION}
                 />
                 <SecureRoute

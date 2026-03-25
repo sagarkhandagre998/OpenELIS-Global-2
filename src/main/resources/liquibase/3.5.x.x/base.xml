@@ -14,6 +14,15 @@
   <include relativeToChangelogFile="true" file="003-add-hide-in-new-ui-column.xml"/>
 
   <!-- Patient Study View React menu entry (Patient -> Study -> View migration) -->
-  <include relativeToChangelogFile="true" file="004-patient-study-view-react-menu.xml"/>
+  <include
+        relativeToChangelogFile="true"
+        file="004-patient-study-view-react-menu.xml"
+    />
+
+  <!-- Patient Study Edit React menu entry (Patient -> Study -> Edit migration) -->
+  <include
+        relativeToChangelogFile="true"
+        file="005-patient-study-edit-react-menu.xml"
+    />
 
 </databaseChangeLog>
