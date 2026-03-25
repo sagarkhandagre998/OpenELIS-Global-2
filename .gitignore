@@ -97,3 +97,9 @@ cypress-videos/
 specs/*/research/AnalyzerDocs/
 
 # Miscellaneous dev artifacts
+
+# Local security proposal (kept locally only, not tracked in repo)
+Security_Proposal/
+
+# Local analysis for proposal (kept locally only, not tracked in repo)
+AnalysisForProposal/
