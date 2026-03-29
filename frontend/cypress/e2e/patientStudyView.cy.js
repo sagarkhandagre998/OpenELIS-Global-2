@@ -23,7 +23,9 @@ describe("Patient Study View", function () {
     });
 
     it("renders the page title 'View Patient'", function () {
-      patientStudyViewPage.getPageTitle().should("contain.text", "View Patient");
+      patientStudyViewPage
+        .getPageTitle()
+        .should("contain.text", "View Patient");
     });
 
     it("can also navigate directly via URL", function () {
@@ -44,9 +46,7 @@ describe("Patient Study View", function () {
     });
 
     it("renders the Search By dropdown", function () {
-      patientStudyViewPage
-        .getSearchCriteriaSelect()
-        .should("be.visible");
+      patientStudyViewPage.getSearchCriteriaSelect().should("be.visible");
     });
 
     it("Search By dropdown has 5 criteria options plus placeholder", function () {
@@ -57,9 +57,7 @@ describe("Patient Study View", function () {
     });
 
     it("renders the Search Value input", function () {
-      patientStudyViewPage
-        .getSearchValueInput()
-        .should("be.visible");
+      patientStudyViewPage.getSearchValueInput().should("be.visible");
     });
 
     it("renders the Search button", function () {
@@ -70,15 +68,11 @@ describe("Patient Study View", function () {
     });
 
     it("does not show results table before any search", function () {
-      patientStudyViewPage
-        .getSearchResultsTable()
-        .should("not.exist");
+      patientStudyViewPage.getSearchResultsTable().should("not.exist");
     });
 
     it("does not show the View Patient Study button before any search", function () {
-      patientStudyViewPage
-        .getViewPatientButton()
-        .should("not.exist");
+      patientStudyViewPage.getViewPatientButton().should("not.exist");
     });
   });
 
@@ -109,9 +103,7 @@ describe("Patient Study View", function () {
 
     it("triggers search when Enter key is pressed in the search input", function () {
       patientStudyViewPage.selectSearchCriteria("2");
-      patientStudyViewPage
-        .getSearchValueInput()
-        .type("D{enter}");
+      patientStudyViewPage.getSearchValueInput().type("D{enter}");
       // Results table or notification should appear
       cy.get(
         ".cds--data-table, .cds--actionable-notification, .cds--toast-notification",
@@ -131,9 +123,7 @@ describe("Patient Study View", function () {
     });
 
     it("displays the search results table after a successful search", function () {
-      patientStudyViewPage
-        .getSearchResultsTable()
-        .should("be.visible");
+      patientStudyViewPage.getSearchResultsTable().should("be.visible");
     });
 
     it("results table has Last Name column header", function () {
@@ -192,15 +182,11 @@ describe("Patient Study View", function () {
     });
 
     it("View Patient Study button is visible after results load", function () {
-      patientStudyViewPage
-        .getViewPatientButton()
-        .should("be.visible");
+      patientStudyViewPage.getViewPatientButton().should("be.visible");
     });
 
     it("View Patient Study button is disabled before a row is selected", function () {
-      patientStudyViewPage
-        .getViewPatientButton()
-        .should("be.disabled");
+      patientStudyViewPage.getViewPatientButton().should("be.disabled");
     });
   });
 
@@ -226,9 +212,7 @@ describe("Patient Study View", function () {
     });
 
     it("View Patient Study button becomes enabled after row selection", function () {
-      patientStudyViewPage
-        .getViewPatientButton()
-        .should("not.be.disabled");
+      patientStudyViewPage.getViewPatientButton().should("not.be.disabled");
     });
 
     it("does NOT auto-load form data on row click", function () {
@@ -256,40 +240,28 @@ describe("Patient Study View", function () {
     });
 
     it("renders the patient summary banner after loading", function () {
-      patientStudyViewPage
-        .getPatientBanner()
-        .should("be.visible");
+      patientStudyViewPage.getPatientBanner().should("be.visible");
     });
 
     it("patient banner contains the patient label", function () {
-      patientStudyViewPage
-        .getPatientBanner()
-        .should("contain.text", "Patient");
+      patientStudyViewPage.getPatientBanner().should("contain.text", "Patient");
     });
 
     it("renders the Study Form type selector", function () {
-      patientStudyViewPage
-        .getStudyTypeSelector()
-        .should("be.visible");
+      patientStudyViewPage.getStudyTypeSelector().should("be.visible");
     });
 
     it("study type selector is NOT disabled", function () {
-      patientStudyViewPage
-        .getStudyTypeSelector()
-        .should("not.be.disabled");
+      patientStudyViewPage.getStudyTypeSelector().should("not.be.disabled");
     });
 
     it("study type selector only shows study types the patient has samples for", function () {
-      patientStudyViewPage
-        .getStudyTypeOptions()
-        .then(($options) => {
-          // Filter out the blank placeholder option
-          const values = [...$options]
-            .map((o) => o.value)
-            .filter(Boolean);
-          expect(values.length).to.be.greaterThan(0);
-          expect(values.length).to.be.lessThan(7);
-        });
+      patientStudyViewPage.getStudyTypeOptions().then(($options) => {
+        // Filter out the blank placeholder option
+        const values = [...$options].map((o) => o.value).filter(Boolean);
+        expect(values.length).to.be.greaterThan(0);
+        expect(values.length).to.be.lessThan(7);
+      });
     });
 
     it("auto-selects the correct study type matching the patient's most recent sample", function () {
@@ -335,41 +307,37 @@ describe("Patient Study View", function () {
     });
 
     it("switching study type re-renders the correct sub-form", function () {
-      patientStudyViewPage
-        .getStudyTypeOptions()
-        .then(($options) => {
-          const availableValues = [...$options]
-            .map((o) => o.value)
-            .filter(Boolean);
+      patientStudyViewPage.getStudyTypeOptions().then(($options) => {
+        const availableValues = [...$options]
+          .map((o) => o.value)
+          .filter(Boolean);
 
-          if (availableValues.length > 1) {
-            // Switch to a different study type
-            const secondOption = availableValues[1];
-            patientStudyViewPage.selectStudyType(secondOption);
-            // Patient Information section should still be visible in new sub-form
-            cy.contains("strong", "Patient Information").should("be.visible");
-          } else {
-            // Only one study type available — verify it shows Patient Information
-            cy.contains("strong", "Patient Information").should("be.visible");
-          }
-        });
+        if (availableValues.length > 1) {
+          // Switch to a different study type
+          const secondOption = availableValues[1];
+          patientStudyViewPage.selectStudyType(secondOption);
+          // Patient Information section should still be visible in new sub-form
+          cy.contains("strong", "Patient Information").should("be.visible");
+        } else {
+          // Only one study type available — verify it shows Patient Information
+          cy.contains("strong", "Patient Information").should("be.visible");
+        }
+      });
     });
 
     it("switching back to original study type shows the original sub-form", function () {
-      patientStudyViewPage
-        .getStudyTypeOptions()
-        .then(($options) => {
-          const availableValues = [...$options]
-            .map((o) => o.value)
-            .filter(Boolean);
+      patientStudyViewPage.getStudyTypeOptions().then(($options) => {
+        const availableValues = [...$options]
+          .map((o) => o.value)
+          .filter(Boolean);
 
-          if (availableValues.length > 1) {
-            patientStudyViewPage.selectStudyType(availableValues[0]);
-            cy.contains("strong", "Patient Information").should("be.visible");
-          } else {
-            cy.contains("strong", "Patient Information").should("be.visible");
-          }
-        });
+        if (availableValues.length > 1) {
+          patientStudyViewPage.selectStudyType(availableValues[0]);
+          cy.contains("strong", "Patient Information").should("be.visible");
+        } else {
+          cy.contains("strong", "Patient Information").should("be.visible");
+        }
+      });
     });
   });
 
