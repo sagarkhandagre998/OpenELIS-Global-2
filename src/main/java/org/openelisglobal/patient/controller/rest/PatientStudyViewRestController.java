@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.validator.GenericValidator;
-import org.openelisglobal.common.rest.BaseRestController;
 import org.openelisglobal.common.log.LogEvent;
+import org.openelisglobal.common.rest.BaseRestController;
 import org.openelisglobal.common.services.DisplayListService;
 import org.openelisglobal.common.services.DisplayListService.ListType;
 import org.openelisglobal.common.util.IdValuePair;
@@ -221,19 +221,19 @@ public class PatientStudyViewRestController extends BaseRestController {
                 }
             }
 
-
-            // Collect all unique projectFormName values across every sample for this patient
+            // Collect all unique projectFormName values across every sample for this
+            // patient
             List<String> availableStudyTypes = new ArrayList<>();
             if (samples != null) {
                 ObservationHistoryType pfnType = observationHistoryTypeService.getByName(OHT_PROJECT_FORM_NAME);
                 if (pfnType != null) {
                     for (Sample sample : samples) {
-                        List<ObservationHistory> sampleOhs = observationHistoryService.getObservationHistoriesBySampleId(sample.getId());
+                        List<ObservationHistory> sampleOhs = observationHistoryService
+                                .getObservationHistoriesBySampleId(sample.getId());
                         if (sampleOhs != null) {
                             for (ObservationHistory oh : sampleOhs) {
-                                if (pfnType.getId().equals(oh.getObservationHistoryTypeId())
-                                        && oh.getValue() != null && !oh.getValue().isEmpty()
-                                        && !availableStudyTypes.contains(oh.getValue())) {
+                                if (pfnType.getId().equals(oh.getObservationHistoryTypeId()) && oh.getValue() != null
+                                        && !oh.getValue().isEmpty() && !availableStudyTypes.contains(oh.getValue())) {
                                     availableStudyTypes.add(oh.getValue());
                                 }
                             }
@@ -266,7 +266,9 @@ public class PatientStudyViewRestController extends BaseRestController {
 
             // ── Age (calculated from date of birth) ──────────────────────────────────
             if (patient.getBirthDate() != null) {
-                int age = java.time.Period.between(patient.getBirthDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate(), java.time.LocalDate.now()).getYears();
+                int age = java.time.Period.between(
+                        patient.getBirthDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate(),
+                        java.time.LocalDate.now()).getYears();
                 formData.put("age", String.valueOf(age));
             } else {
                 formData.put("age", "");
@@ -276,12 +278,17 @@ public class PatientStudyViewRestController extends BaseRestController {
             formData.put("subjectNumber", getOHValue(ohByTypeId, OHT_SUBJECT_NUMBER));
             formData.put("siteSubjectNumber", getOHValue(ohByTypeId, OHT_SITE_SUBJECT_NUMBER));
             formData.put("upidCode", getOHValue(ohByTypeId, OHT_UPID_CODE));
-            // centerCode/centerName: prefer generic OH value; fall back to ARV-specific keys
+            // centerCode/centerName: prefer generic OH value; fall back to ARV-specific
+            // keys
             String centerCode = getOHValue(ohByTypeId, OHT_CENTER_CODE);
-            if (centerCode.isEmpty()) { centerCode = getOHValue(ohByTypeId, OHT_ARV_CENTER_CODE); }
+            if (centerCode.isEmpty()) {
+                centerCode = getOHValue(ohByTypeId, OHT_ARV_CENTER_CODE);
+            }
             formData.put("centerCode", centerCode);
             String centerName = getOHValue(ohByTypeId, OHT_CENTER_NAME);
-            if (centerName.isEmpty()) { centerName = getOHValue(ohByTypeId, OHT_ARV_CENTER_NAME); }
+            if (centerName.isEmpty()) {
+                centerName = getOHValue(ohByTypeId, OHT_ARV_CENTER_NAME);
+            }
             formData.put("centerName", centerName);
             formData.put("interviewDate", getOHValue(ohByTypeId, OHT_INTERVIEW_DATE));
             formData.put("interviewTime", getOHValue(ohByTypeId, OHT_INTERVIEW_TIME));
@@ -440,15 +447,19 @@ public class PatientStudyViewRestController extends BaseRestController {
         lists.put("yesNoUnknown", dictionaryListToIdValuePairs(ObservationHistoryList.YES_NO_UNKNOWN));
         lists.put("yesNoNa", dictionaryListToIdValuePairs(ObservationHistoryList.YES_NO_NA));
         lists.put("arvProphylaxis2", dictionaryListToIdValuePairs(ObservationHistoryList.ARV_PROPHYLAXIS_2));
-        lists.put("arvReasonForVlDemand", dictionaryListToIdValuePairs(ObservationHistoryList.ARV_REASON_FOR_VL_DEMAND));
+        lists.put("arvReasonForVlDemand",
+                dictionaryListToIdValuePairs(ObservationHistoryList.ARV_REASON_FOR_VL_DEMAND));
         lists.put("eidWhichPcr", dictionaryListToIdValuePairs(ObservationHistoryList.EID_WHICH_PCR));
         lists.put("eidSecondPcrReason", dictionaryListToIdValuePairs(ObservationHistoryList.EID_SECOND_PCR_REASON));
         lists.put("eidTypeOfClinic", dictionaryListToIdValuePairs(ObservationHistoryList.EID_TYPE_OF_CLINIC));
         lists.put("eidHowChildFed", dictionaryListToIdValuePairs(ObservationHistoryList.EID_HOW_CHILD_FED));
-        lists.put("eidStoppedBreastfeeding", dictionaryListToIdValuePairs(ObservationHistoryList.EID_STOPPED_BREASTFEEDING));
+        lists.put("eidStoppedBreastfeeding",
+                dictionaryListToIdValuePairs(ObservationHistoryList.EID_STOPPED_BREASTFEEDING));
         lists.put("eidMothersHivStatus", dictionaryListToIdValuePairs(ObservationHistoryList.EID_MOTHERS_HIV_STATUS));
-        lists.put("eidMothersArvTreatment", dictionaryListToIdValuePairs(ObservationHistoryList.EID_MOTHERS_ARV_TREATMENT));
-        lists.put("eidInfantProphylaxisArv", dictionaryListToIdValuePairs(ObservationHistoryList.EID_INFANT_PROPHYLAXIS_ARV));
+        lists.put("eidMothersArvTreatment",
+                dictionaryListToIdValuePairs(ObservationHistoryList.EID_MOTHERS_ARV_TREATMENT));
+        lists.put("eidInfantProphylaxisArv",
+                dictionaryListToIdValuePairs(ObservationHistoryList.EID_INFANT_PROPHYLAXIS_ARV));
         lists.put("eidOrgs", organizationListToMap(OrganizationTypeList.EID_ORGS));
         lists.put("eidOrgsByName", organizationListToMap(OrganizationTypeList.EID_ORGS_BY_NAME));
 

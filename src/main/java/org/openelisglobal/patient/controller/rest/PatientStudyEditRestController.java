@@ -24,18 +24,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * REST controller that serves the Patient → Study → Edit (read-write) page.
  *
- * <p>Single endpoint: POST /rest/patient-study-edit
+ * <p>
+ * Single endpoint: POST /rest/patient-study-edit
  *
- * <p>Accepts a JSON payload assembled by the React {@code PatientStudyEditForm}
+ * <p>
+ * Accepts a JSON payload assembled by the React {@code PatientStudyEditForm}
  * component, converts it into a {@link PatientEditByProjectForm}, and delegates
  * persistence to the existing {@link PatientEditUpdate} accessioner — the same
- * path used by the legacy JSP {@code PatientEditByProjectController} via {@code IPatientEditUpdate}.
+ * path used by the legacy JSP {@code PatientEditByProjectController} via
+ * {@code IPatientEditUpdate}.
  *
- * <p>Responsibilities of this controller are intentionally narrow:
+ * <p>
+ * Responsibilities of this controller are intentionally narrow:
  * <ul>
- *   <li>Request/response mapping (JSON ↔ form)</li>
- *   <li>Delegating to the accessioner layer</li>
- *   <li>Returning a uniform success/error JSON envelope</li>
+ * <li>Request/response mapping (JSON ↔ form)</li>
+ * <li>Delegating to the accessioner layer</li>
+ * <li>Returning a uniform success/error JSON envelope</li>
  * </ul>
  * No business logic, no DAO calls, no {@code @Transactional} — all of that
  * lives inside the accessioner and its downstream services.
@@ -52,8 +56,10 @@ public class PatientStudyEditRestController extends BaseRestController {
      * Persists an edited patient study record submitted from the React
      * PatientStudyEdit page.
      *
-     * <p>The JSON body mirrors the {@code handleSave()} payload assembled in
+     * <p>
+     * The JSON body mirrors the {@code handleSave()} payload assembled in
      * {@code PatientStudyEditForm.js}:
+     * 
      * <pre>
      * {
      *   "patientPK":            "...",
@@ -76,19 +82,14 @@ public class PatientStudyEditRestController extends BaseRestController {
      * }
      * </pre>
      *
-     * <p>Returns {@code {"success": true}} on success or
-     * {@code {"success": false, "error": "..."}} on failure.
+     * <p>
+     * Returns {@code {"success": true}} on success or {@code {"success": false,
+     * "error": "..."}} on failure.
      */
-    @PostMapping(
-        value = "patient-study-edit",
-        consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping(value = "patient-study-edit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> savePatientStudyEdit(
-        HttpServletRequest request,
-        @RequestBody Map<String, Object> payload
-    ) {
+    public ResponseEntity<Map<String, Object>> savePatientStudyEdit(HttpServletRequest request,
+            @RequestBody Map<String, Object> payload) {
         Map<String, Object> response = new HashMap<>();
 
         try {
@@ -98,9 +99,7 @@ public class PatientStudyEditRestController extends BaseRestController {
             // PatientEditUpdate.canAccession() inspects request.getParameter("type")
             // and requires the value "READWRITE". We wrap the incoming request so
             // callers do not need to supply this parameter explicitly.
-            HttpServletRequest wrappedRequest = new HttpServletRequestWrapper(
-                request
-            ) {
+            HttpServletRequest wrappedRequest = new HttpServletRequestWrapper(request) {
                 @Override
                 public String getParameter(String name) {
                     if ("type".equals(name)) {
@@ -114,9 +113,7 @@ public class PatientStudyEditRestController extends BaseRestController {
             // (in particular the prototype-scoped Errors messages bean) are injected.
             // Using plain new PatientEditUpdate(...) bypasses Spring and leaves
             // messages null, causing an NPE inside Accessioner.findSample().
-            IPatientEditUpdate accessioner = SpringContext.getBean(
-                IPatientEditUpdate.class
-            );
+            IPatientEditUpdate accessioner = SpringContext.getBean(IPatientEditUpdate.class);
             accessioner.setFieldsFromForm(form);
             accessioner.setSysUserId(sysUserId);
             accessioner.setRequest(wrappedRequest);
@@ -126,25 +123,14 @@ public class PatientStudyEditRestController extends BaseRestController {
                 response.put("success", true);
             } else {
                 response.put("success", false);
-                response.put(
-                    "error",
-                    "Cannot accession this record – access type not permitted"
-                );
+                response.put("error", "Cannot accession this record – access type not permitted");
             }
         } catch (Exception e) {
-            LogEvent.logError(
-                this.getClass().getSimpleName(),
-                "savePatientStudyEdit",
-                "Error saving patient study edit: " + e.getMessage()
-            );
+            LogEvent.logError(this.getClass().getSimpleName(), "savePatientStudyEdit",
+                    "Error saving patient study edit: " + e.getMessage());
             LogEvent.logError(e);
             response.put("success", false);
-            response.put(
-                "error",
-                e.getMessage() != null
-                    ? e.getMessage()
-                    : "Unexpected server error"
-            );
+            response.put("error", e.getMessage() != null ? e.getMessage() : "Unexpected server error");
             return ResponseEntity.status(500).body(response);
         }
 
@@ -159,14 +145,13 @@ public class PatientStudyEditRestController extends BaseRestController {
      * Converts the raw JSON payload map sent by the React form into a fully
      * populated {@link PatientEditByProjectForm} ready for the accessioner.
      *
-     * <p>Every field access uses null-safe helpers so that a missing key in the
-     * payload leaves the corresponding form field at its default empty value
-     * rather than throwing a {@link NullPointerException}.
+     * <p>
+     * Every field access uses null-safe helpers so that a missing key in the
+     * payload leaves the corresponding form field at its default empty value rather
+     * than throwing a {@link NullPointerException}.
      */
     @SuppressWarnings("unchecked")
-    private PatientEditByProjectForm buildFormFromPayload(
-        Map<String, Object> payload
-    ) {
+    private PatientEditByProjectForm buildFormFromPayload(Map<String, Object> payload) {
         PatientEditByProjectForm form = new PatientEditByProjectForm();
         form.setPatientUpdateStatus(PatientUpdateStatus.UPDATE);
 
@@ -176,19 +161,13 @@ public class PatientStudyEditRestController extends BaseRestController {
         form.setLastName(asString(payload.get("lastName")));
         form.setFirstName(asString(payload.get("firstName")));
         form.setGender(asString(payload.get("gender")));
-        form.setBirthDateForDisplay(
-            asString(payload.get("birthDateForDisplay"))
-        );
+        form.setBirthDateForDisplay(asString(payload.get("birthDateForDisplay")));
 
         form.setSubjectNumber(asString(payload.get("subjectNumber")));
         form.setSiteSubjectNumber(asString(payload.get("siteSubjectNumber")));
         form.setLabNo(asString(payload.get("labNo")));
-        form.setReceivedDateForDisplay(
-            asString(payload.get("receivedDateForDisplay"))
-        );
-        form.setReceivedTimeForDisplay(
-            asString(payload.get("receivedTimeForDisplay"))
-        );
+        form.setReceivedDateForDisplay(asString(payload.get("receivedDateForDisplay")));
+        form.setReceivedTimeForDisplay(asString(payload.get("receivedTimeForDisplay")));
         form.setInterviewDate(asString(payload.get("interviewDate")));
         form.setInterviewTime(asString(payload.get("interviewTime")));
         form.setUpidCode(asString(payload.get("upidCode")));
@@ -206,8 +185,7 @@ public class PatientStudyEditRestController extends BaseRestController {
         }
 
         // ── Observations ──────────────────────────────────────────────────────
-        Map<String, Object> obsMap =
-            payload.get("observations") instanceof Map
+        Map<String, Object> obsMap = payload.get("observations") instanceof Map
                 ? (Map<String, Object>) payload.get("observations")
                 : new HashMap<>();
 
@@ -226,35 +204,24 @@ public class PatientStudyEditRestController extends BaseRestController {
         obs.setNameOfRequestor(asString(obsMap.get("nameOfRequestor")));
 
         // ARV-specific observations
-        obs.setArvProphylaxisBenefit(
-            asString(obsMap.get("arvProphylaxisBenefit"))
-        );
+        obs.setArvProphylaxisBenefit(asString(obsMap.get("arvProphylaxisBenefit")));
         obs.setArvProphylaxis(asString(obsMap.get("arvProphylaxis")));
         obs.setCurrentARVTreatment(asString(obsMap.get("currentARVTreatment")));
         obs.setPriorARVTreatment(asString(obsMap.get("priorARVTreatment")));
-        obs.setInterruptedARVTreatment(
-            asString(obsMap.get("interruptedARVTreatment"))
-        );
+        obs.setInterruptedARVTreatment(asString(obsMap.get("interruptedARVTreatment")));
         obs.setAidsStage(asString(obsMap.get("aidsStage")));
-        obs.setArvTreatmentAnyAdverseEffects(
-            asString(obsMap.get("arvTreatmentAnyAdverseEffects"))
-        );
+        obs.setArvTreatmentAnyAdverseEffects(asString(obsMap.get("arvTreatmentAnyAdverseEffects")));
         obs.setArvTreatmentChange(asString(obsMap.get("arvTreatmentChange")));
         obs.setArvTreatmentNew(asString(obsMap.get("arvTreatmentNew")));
         obs.setArvTreatmentRegime(asString(obsMap.get("arvTreatmentRegime")));
-        obs.setArvTreatmentInitDate(
-            asString(obsMap.get("arvTreatmentInitDate"))
-        );
+        obs.setArvTreatmentInitDate(asString(obsMap.get("arvTreatmentInitDate")));
 
         // Prior ARV treatment INN list (up to 4 indexed free-text entries)
         Object priorInnsRaw = obsMap.get("priorARVTreatmentINNsList");
         if (priorInnsRaw instanceof List) {
             List<?> priorInns = (List<?>) priorInnsRaw;
             for (int i = 0; i < 4; i++) {
-                obs.setPriorARVTreatmentINNs(
-                    i,
-                    i < priorInns.size() ? asString(priorInns.get(i)) : ""
-                );
+                obs.setPriorARVTreatmentINNs(i, i < priorInns.size() ? asString(priorInns.get(i)) : "");
             }
         }
 
@@ -263,10 +230,7 @@ public class PatientStudyEditRestController extends BaseRestController {
         if (currentInnsRaw instanceof List) {
             List<?> currentInns = (List<?>) currentInnsRaw;
             for (int i = 0; i < 4; i++) {
-                obs.setCurrentARVTreatmentINNs(
-                    i,
-                    i < currentInns.size() ? asString(currentInns.get(i)) : ""
-                );
+                obs.setCurrentARVTreatmentINNs(i, i < currentInns.size() ? asString(currentInns.get(i)) : "");
             }
         }
 
@@ -275,10 +239,7 @@ public class PatientStudyEditRestController extends BaseRestController {
         if (futureInnsRaw instanceof List) {
             List<?> futureInns = (List<?>) futureInnsRaw;
             for (int i = 0; i < 4; i++) {
-                obs.setFutureARVTreatmentINNs(
-                    i,
-                    i < futureInns.size() ? asString(futureInns.get(i)) : ""
-                );
+                obs.setFutureARVTreatmentINNs(i, i < futureInns.size() ? asString(futureInns.get(i)) : "");
             }
         }
 
@@ -288,20 +249,12 @@ public class PatientStudyEditRestController extends BaseRestController {
         obs.setPriorDiseasesValue(asString(obsMap.get("priorDiseasesValue")));
         obs.setAnyCurrentDiseases(asString(obsMap.get("anyCurrentDiseases")));
         obs.setCurrentDiseases(asString(obsMap.get("currentDiseases")));
-        obs.setCurrentDiseasesValue(
-            asString(obsMap.get("currentDiseasesValue"))
-        );
+        obs.setCurrentDiseasesValue(asString(obsMap.get("currentDiseasesValue")));
         obs.setCurrentOITreatment(asString(obsMap.get("currentOITreatment")));
-        obs.setCotrimoxazoleTreatment(
-            asString(obsMap.get("cotrimoxazoleTreatment"))
-        );
-        obs.setCotrimoxazoleTreatmentAnyAdverseEffects(
-            asString(obsMap.get("cotrimoxazoleTreatmentAnyAdverseEffects"))
-        );
+        obs.setCotrimoxazoleTreatment(asString(obsMap.get("cotrimoxazoleTreatment")));
+        obs.setCotrimoxazoleTreatmentAnyAdverseEffects(asString(obsMap.get("cotrimoxazoleTreatmentAnyAdverseEffects")));
         obs.setAntiTbTreatment(asString(obsMap.get("antiTbTreatment")));
-        obs.setAnySecondaryTreatment(
-            asString(obsMap.get("anySecondaryTreatment"))
-        );
+        obs.setAnySecondaryTreatment(asString(obsMap.get("anySecondaryTreatment")));
         obs.setSecondaryTreatment(asString(obsMap.get("secondaryTreatment")));
 
         // Vitals / clinical scores
@@ -324,9 +277,7 @@ public class PatientStudyEditRestController extends BaseRestController {
         obs.setVlPregnancy(asString(obsMap.get("vlPregnancy")));
         obs.setVlSuckle(asString(obsMap.get("vlSuckle")));
         obs.setVlReasonForRequest(asString(obsMap.get("vlReasonForRequest")));
-        obs.setVlOtherReasonForRequest(
-            asString(obsMap.get("vlOtherReasonForRequest"))
-        );
+        obs.setVlOtherReasonForRequest(asString(obsMap.get("vlOtherReasonForRequest")));
         obs.setVlBenefit(asString(obsMap.get("vlBenefit")));
         obs.setPriorVLLab(asString(obsMap.get("priorVLLab")));
         obs.setPriorVLValue(asString(obsMap.get("priorVLValue")));
@@ -342,33 +293,22 @@ public class PatientStudyEditRestController extends BaseRestController {
 
         // EID-specific observations
         obs.setEidTypeOfClinic(asString(obsMap.get("eidTypeOfClinic")));
-        obs.setEidTypeOfClinicOther(
-            asString(obsMap.get("eidTypeOfClinicOther"))
-        );
+        obs.setEidTypeOfClinicOther(asString(obsMap.get("eidTypeOfClinicOther")));
         obs.setEidHowChildFed(asString(obsMap.get("eidHowChildFed")));
-        obs.setEidStoppedBreastfeeding(
-            asString(obsMap.get("eidStoppedBreastfeeding"))
-        );
-        obs.setEidInfantSymptomatic(
-            asString(obsMap.get("eidInfantSymptomatic"))
-        );
+        obs.setEidStoppedBreastfeeding(asString(obsMap.get("eidStoppedBreastfeeding")));
+        obs.setEidInfantSymptomatic(asString(obsMap.get("eidInfantSymptomatic")));
         obs.setEidMothersHIVStatus(asString(obsMap.get("eidMothersHIVStatus")));
         obs.setEidMothersARV(asString(obsMap.get("eidMothersARV")));
         obs.setEidInfantsARV(asString(obsMap.get("eidInfantsARV")));
-        obs.setEidInfantCotrimoxazole(
-            asString(obsMap.get("eidInfantCotrimoxazole"))
-        );
+        obs.setEidInfantCotrimoxazole(asString(obsMap.get("eidInfantCotrimoxazole")));
         obs.setEidInfantPTME(asString(obsMap.get("eidInfantPTME")));
         obs.setWhichPCR(asString(obsMap.get("whichPCR")));
-        obs.setReasonForSecondPCRTest(
-            asString(obsMap.get("reasonForSecondPCRTest"))
-        );
+        obs.setReasonForSecondPCRTest(asString(obsMap.get("reasonForSecondPCRTest")));
 
         form.setObservations(obs);
 
         // ── Project data (sample-level boolean flags + org fields) ────────────
-        Map<String, Object> projMap =
-            payload.get("projectData") instanceof Map
+        Map<String, Object> projMap = payload.get("projectData") instanceof Map
                 ? (Map<String, Object>) payload.get("projectData")
                 : new HashMap<>();
 
@@ -381,9 +321,7 @@ public class PatientStudyEditRestController extends BaseRestController {
         projectData.setAsanteTest(asBoolean(projMap.get("asanteTest")));
         projectData.setPlasmaTaken(asBoolean(projMap.get("plasmaTaken")));
         projectData.setSerumTaken(asBoolean(projMap.get("serumTaken")));
-        projectData.setUnderInvestigationNote(
-            asString(projMap.get("underInvestigationNote"))
-        );
+        projectData.setUnderInvestigationNote(asString(projMap.get("underInvestigationNote")));
         projectData.setEIDSiteName(asString(projMap.get("EIDsiteName")));
         projectData.setEIDsiteCode(asString(projMap.get("EIDsiteCode")));
         projectData.setARVcenterCode(asString(projMap.get("ARVcenterCode")));
@@ -399,8 +337,8 @@ public class PatientStudyEditRestController extends BaseRestController {
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Converts any object (typically deserialized from JSON) to a non-null,
-     * trimmed {@link String}. Returns an empty string for {@code null}.
+     * Converts any object (typically deserialized from JSON) to a non-null, trimmed
+     * {@link String}. Returns an empty string for {@code null}.
      */
     private String asString(Object value) {
         return value != null ? value.toString().trim() : "";
