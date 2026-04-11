@@ -37,6 +37,8 @@ import org.openelisglobal.referral.fhir.service.FhirReferralService;
 import org.openelisglobal.reports.service.WHONetReportServiceImpl;
 import org.openelisglobal.requester.service.RequesterTypeService;
 import org.openelisglobal.result.controller.AnalyzerResultsController;
+import org.openelisglobal.patient.controller.rest.PatientStudyViewRestController;
+import org.openelisglobal.patient.controller.rest.PatientStudyEditRestController;
 import org.ozeki.sms.service.OzekiMessageOutService;
 import org.springframework.beans.factory.UnsatisfiedDependencyException;
 import org.springframework.context.MessageSource;
@@ -95,7 +97,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         "org.openelisglobal.storage", "org.openelisglobal.notebook", "org.openelisglobal.coldstorage",
         "org.openelisglobal.alert", "org.openelisglobal.notification", "org.openelisglobal.reportdefinition",
         "org.openelisglobal.scheduler", "org.openelisglobal.sitebranding", "org.openelisglobal.resultvalidation",
-        "org.openelisglobal.plugin", "org.openelisglobal.fhir.providers", "org.openelisglobal.common.dao",
+        "org.openelisglobal.plugin", "org.openelisglobal.fhir.providers", "org.openelisglobal.common.dao", "org.openelisglobal.common.validator",
         "org.openelisglobal.report", "org.openelisglobal.eqa", "org.openelisglobal.qc" }, excludeFilters = {
 
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.openelisglobal.patient.controller.*"),
@@ -335,5 +337,15 @@ public class AppTestConfig implements WebMvcConfigurer {
     @Profile("test")
     public DataExportTaskDAO dataExportTaskDAO() {
         return mock(DataExportTaskDAO.class);
+    }
+
+    @Bean
+    public PatientStudyViewRestController patientStudyViewRestController() {
+        return new PatientStudyViewRestController();
+    }
+
+    @Bean
+    public PatientStudyEditRestController patientStudyEditRestController() {
+        return new PatientStudyEditRestController();
     }
 }

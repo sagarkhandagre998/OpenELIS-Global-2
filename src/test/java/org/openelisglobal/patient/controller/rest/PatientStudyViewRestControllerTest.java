@@ -189,7 +189,7 @@ public class PatientStudyViewRestControllerTest extends BaseWebContextSensitiveT
     }
 
     /**
-     * The availableStudyForms list must be present in the response so the React
+     * The availableStudyTypes list must be present in the response so the React
      * study-type selector knows which tabs to show.
      */
     @Test
@@ -199,6 +199,6 @@ public class PatientStudyViewRestControllerTest extends BaseWebContextSensitiveT
                 .session(mockSession)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.formData.availableStudyForms").exists());
+                .andExpect(jsonPath("$.formData.availableStudyTypes").exists());
     }
 }
