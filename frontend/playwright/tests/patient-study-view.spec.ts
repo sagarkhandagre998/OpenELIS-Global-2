@@ -101,16 +101,13 @@ async function interceptSearch(page: any) {
 }
 
 async function interceptStudyView(page: any) {
-  await page.route(
-    "**/rest/patient-study-view**",
-    async (route: any) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify(MOCK_STUDY_RESPONSE),
-      });
-    },
-  );
+  await page.route("**/rest/patient-study-view**", async (route: any) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(MOCK_STUDY_RESPONSE),
+    });
+  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -215,13 +212,27 @@ test.describe("Patient Study View", () => {
     const table = page.locator(".cds--data-table");
     await expect(table).toBeVisible({ timeout: UI_TIMEOUT });
 
-    await expect(table.getByRole("columnheader", { name: "Last Name" })).toBeVisible();
-    await expect(table.getByRole("columnheader", { name: "First Name" })).toBeVisible();
-    await expect(table.getByRole("columnheader", { name: "Gender" })).toBeVisible();
-    await expect(table.getByRole("columnheader", { name: "Date of Birth" })).toBeVisible();
-    await expect(table.getByRole("columnheader", { name: "National ID" })).toBeVisible();
-    await expect(table.getByRole("columnheader", { name: "Subject Number" })).toBeVisible();
-    await expect(table.getByRole("columnheader", { name: "ST Number" })).toBeVisible();
+    await expect(
+      table.getByRole("columnheader", { name: "Last Name" }),
+    ).toBeVisible();
+    await expect(
+      table.getByRole("columnheader", { name: "First Name" }),
+    ).toBeVisible();
+    await expect(
+      table.getByRole("columnheader", { name: "Gender" }),
+    ).toBeVisible();
+    await expect(
+      table.getByRole("columnheader", { name: "Date of Birth" }),
+    ).toBeVisible();
+    await expect(
+      table.getByRole("columnheader", { name: "National ID" }),
+    ).toBeVisible();
+    await expect(
+      table.getByRole("columnheader", { name: "Subject Number" }),
+    ).toBeVisible();
+    await expect(
+      table.getByRole("columnheader", { name: "ST Number" }),
+    ).toBeVisible();
   });
 
   test("search returns at least one patient row from mock", async ({

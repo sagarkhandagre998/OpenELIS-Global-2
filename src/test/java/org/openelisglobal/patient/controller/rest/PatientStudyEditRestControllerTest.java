@@ -24,9 +24,11 @@ import org.springframework.test.annotation.Rollback;
 /**
  * Integration tests for {@link PatientStudyEditRestController}.
  *
- * <p>Endpoint under test: POST /rest/patient-study-edit
+ * <p>
+ * Endpoint under test: POST /rest/patient-study-edit
  *
- * <p>Uses the real Spring context and an in-memory test database via
+ * <p>
+ * Uses the real Spring context and an in-memory test database via
  * {@link BaseWebContextSensitiveTest}. All data modifications are rolled back
  * after each test run.
  */
@@ -109,18 +111,16 @@ public class PatientStudyEditRestControllerTest extends BaseWebContextSensitiveT
     // ── POST /rest/patient-study-edit ─────────────────────────────────────────
 
     /**
-     * The endpoint is reachable with a well-formed JSON payload and returns a JSON envelope.
-     * The "success" field must always be present (true on full stack, false when project seed data is absent).
+     * The endpoint is reachable with a well-formed JSON payload and returns a JSON
+     * envelope. The "success" field must always be present (true on full stack,
+     * false when project seed data is absent).
      */
     @Test
     public void savePatientStudyEdit_ValidPayload_Returns200WithSuccessField() throws Exception {
         Map<String, Object> payload = buildMinimalPayload();
 
-        mockMvc.perform(post("/rest/patient-study-edit")
-                .session(mockSession)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payload)))
-                .andExpect(status().is5xxServerError())
+        mockMvc.perform(post("/rest/patient-study-edit").session(mockSession).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload))).andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("$.success").exists());
     }
 
@@ -132,32 +132,27 @@ public class PatientStudyEditRestControllerTest extends BaseWebContextSensitiveT
     public void savePatientStudyEdit_WrongContentType_Returns415() throws Exception {
         Map<String, Object> payload = buildMinimalPayload();
 
-        mockMvc.perform(post("/rest/patient-study-edit")
-                .session(mockSession)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(objectMapper.writeValueAsString(payload)))
+        mockMvc.perform(post("/rest/patient-study-edit").session(mockSession)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED).content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isUnsupportedMediaType());
     }
 
     /**
-     * An empty JSON body must not throw an unhandled exception. The controller
-     * must handle missing keys gracefully and return a response (success or error).
+     * An empty JSON body must not throw an unhandled exception. The controller must
+     * handle missing keys gracefully and return a response (success or error).
      */
     @Test
     public void savePatientStudyEdit_EmptyPayload_ReturnsResponseWithSuccessField() throws Exception {
         Map<String, Object> payload = new HashMap<>();
 
-        mockMvc.perform(post("/rest/patient-study-edit")
-                .session(mockSession)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payload)))
-                .andExpect(jsonPath("$.success").exists());
+        mockMvc.perform(post("/rest/patient-study-edit").session(mockSession).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload))).andExpect(jsonPath("$.success").exists());
     }
 
     /**
      * A payload with an observations block containing ARV fields must be accepted
-     * without a 500 error — verifying the observation mapping path does not
-     * throw a NullPointerException on missing keys.
+     * without a 500 error — verifying the observation mapping path does not throw a
+     * NullPointerException on missing keys.
      */
     @Test
     public void savePatientStudyEdit_PayloadWithObservations_DoesNotReturn500() throws Exception {
@@ -173,11 +168,8 @@ public class PatientStudyEditRestControllerTest extends BaseWebContextSensitiveT
         Map<String, Object> payload = buildMinimalPayload();
         payload.put("observations", observations);
 
-        mockMvc.perform(post("/rest/patient-study-edit")
-                .session(mockSession)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payload)))
-                .andExpect(jsonPath("$.success").exists());
+        mockMvc.perform(post("/rest/patient-study-edit").session(mockSession).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload))).andExpect(jsonPath("$.success").exists());
     }
 
     /**
@@ -189,11 +181,8 @@ public class PatientStudyEditRestControllerTest extends BaseWebContextSensitiveT
         Map<String, Object> payload = buildMinimalPayload();
         payload.put("projectFormName", "FollowupARV_Id");
 
-        mockMvc.perform(post("/rest/patient-study-edit")
-                .session(mockSession)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payload)))
-                .andExpect(jsonPath("$.success").exists());
+        mockMvc.perform(post("/rest/patient-study-edit").session(mockSession).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload))).andExpect(jsonPath("$.success").exists());
     }
 
     /**
@@ -215,16 +204,13 @@ public class PatientStudyEditRestControllerTest extends BaseWebContextSensitiveT
         payload.put("projectFormName", "EID_Id");
         payload.put("observations", observations);
 
-        mockMvc.perform(post("/rest/patient-study-edit")
-                .session(mockSession)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payload)))
-                .andExpect(jsonPath("$.success").exists());
+        mockMvc.perform(post("/rest/patient-study-edit").session(mockSession).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload))).andExpect(jsonPath("$.success").exists());
     }
 
     /**
-     * A payload for the VL (Viral Load) study form must be routed correctly
-     * through buildFormFromPayload without exceptions.
+     * A payload for the VL (Viral Load) study form must be routed correctly through
+     * buildFormFromPayload without exceptions.
      */
     @Test
     public void savePatientStudyEdit_VLForm_DoesNotReturn500() throws Exception {
@@ -242,27 +228,21 @@ public class PatientStudyEditRestControllerTest extends BaseWebContextSensitiveT
         payload.put("projectFormName", "VL_Id");
         payload.put("observations", observations);
 
-        mockMvc.perform(post("/rest/patient-study-edit")
-                .session(mockSession)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payload)))
-                .andExpect(jsonPath("$.success").exists());
+        mockMvc.perform(post("/rest/patient-study-edit").session(mockSession).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload))).andExpect(jsonPath("$.success").exists());
     }
 
     /**
-     * A non-numeric centerCode value must not throw a NumberFormatException —
-     * the controller must silently ignore it and leave centerCode null.
+     * A non-numeric centerCode value must not throw a NumberFormatException — the
+     * controller must silently ignore it and leave centerCode null.
      */
     @Test
     public void savePatientStudyEdit_NonNumericCenterCode_DoesNotReturn500() throws Exception {
         Map<String, Object> payload = buildMinimalPayload();
         payload.put("centerCode", "NOT_A_NUMBER");
 
-        mockMvc.perform(post("/rest/patient-study-edit")
-                .session(mockSession)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payload)))
-                .andExpect(jsonPath("$.success").exists());
+        mockMvc.perform(post("/rest/patient-study-edit").session(mockSession).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload))).andExpect(jsonPath("$.success").exists());
     }
 
     /**
@@ -272,17 +252,13 @@ public class PatientStudyEditRestControllerTest extends BaseWebContextSensitiveT
     @Test
     public void savePatientStudyEdit_WithPriorARVInnList_DoesNotReturn500() throws Exception {
         Map<String, Object> observations = new HashMap<>();
-        observations.put("priorARVTreatmentINNsList",
-                java.util.Arrays.asList("TDF", "3TC", "", ""));
+        observations.put("priorARVTreatmentINNsList", java.util.Arrays.asList("TDF", "3TC", "", ""));
 
         Map<String, Object> payload = buildMinimalPayload();
         payload.put("observations", observations);
 
-        mockMvc.perform(post("/rest/patient-study-edit")
-                .session(mockSession)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payload)))
-                .andExpect(jsonPath("$.success").exists());
+        mockMvc.perform(post("/rest/patient-study-edit").session(mockSession).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload))).andExpect(jsonPath("$.success").exists());
     }
 
     /**
@@ -292,11 +268,8 @@ public class PatientStudyEditRestControllerTest extends BaseWebContextSensitiveT
     public void savePatientStudyEdit_ValidPayload_ResponseIsJson() throws Exception {
         Map<String, Object> payload = buildMinimalPayload();
 
-        mockMvc.perform(post("/rest/patient-study-edit")
-                .session(mockSession)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payload)))
-                .andExpect(status().is5xxServerError())
+        mockMvc.perform(post("/rest/patient-study-edit").session(mockSession).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload))).andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("$").isMap());
     }
 }

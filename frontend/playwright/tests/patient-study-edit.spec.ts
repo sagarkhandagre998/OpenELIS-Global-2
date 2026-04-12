@@ -294,8 +294,7 @@ test.describe("Patient Study Edit", () => {
     const [saveRequest] = await Promise.all([
       page.waitForRequest(
         (req) =>
-          req.url().includes("patient-study-edit") &&
-          req.method() === "POST",
+          req.url().includes("patient-study-edit") && req.method() === "POST",
       ),
       page.locator("#savePatientStudyButton").click(),
     ]);

@@ -21,9 +21,11 @@ import org.springframework.test.annotation.Rollback;
 /**
  * Integration tests for {@link PatientStudyViewRestController}.
  *
- * <p>Endpoint under test: GET /rest/patient-study-view
+ * <p>
+ * Endpoint under test: GET /rest/patient-study-view
  *
- * <p>Uses the real Spring context and an in-memory test database via
+ * <p>
+ * Uses the real Spring context and an in-memory test database via
  * {@link BaseWebContextSensitiveTest}. All data modifications are rolled back
  * after each test run.
  */
@@ -67,17 +69,14 @@ public class PatientStudyViewRestControllerTest extends BaseWebContextSensitiveT
     // ── GET /rest/patient-study-view (no patientID) ───────────────────────────
 
     /**
-     * When no patientID is supplied the endpoint must return 200 with the
-     * reference lists and an empty formData block — allowing the UI to render
-     * dropdowns before any patient is selected.
+     * When no patientID is supplied the endpoint must return 200 with the reference
+     * lists and an empty formData block — allowing the UI to render dropdowns
+     * before any patient is selected.
      */
     @Test
     public void getPatientStudyView_NoPatientId_Returns200WithReferenceLists() throws Exception {
-        mockMvc.perform(get("/rest/patient-study-view")
-                .session(mockSession)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.referenceLists").exists())
+        mockMvc.perform(get("/rest/patient-study-view").session(mockSession).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.referenceLists").exists())
                 .andExpect(jsonPath("$.formData").exists());
     }
 
@@ -87,11 +86,8 @@ public class PatientStudyViewRestControllerTest extends BaseWebContextSensitiveT
      */
     @Test
     public void getPatientStudyView_NoPatientId_ReferenceListsContainExpectedKeys() throws Exception {
-        mockMvc.perform(get("/rest/patient-study-view")
-                .session(mockSession)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.referenceLists.hivStatuses").exists())
+        mockMvc.perform(get("/rest/patient-study-view").session(mockSession).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.referenceLists.hivStatuses").exists())
                 .andExpect(jsonPath("$.referenceLists.yesNo").exists())
                 .andExpect(jsonPath("$.referenceLists.educationLevels").exists())
                 .andExpect(jsonPath("$.referenceLists.maritalStatuses").exists())
@@ -106,13 +102,9 @@ public class PatientStudyViewRestControllerTest extends BaseWebContextSensitiveT
      */
     @Test
     public void getPatientStudyView_ValidPatientId_Returns200WithFormData() throws Exception {
-        mockMvc.perform(get("/rest/patient-study-view")
-                .param("patientID", testPatient.getId())
-                .session(mockSession)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.formData").exists())
-                .andExpect(jsonPath("$.referenceLists").exists());
+        mockMvc.perform(get("/rest/patient-study-view").param("patientID", testPatient.getId()).session(mockSession)
+                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.formData").exists()).andExpect(jsonPath("$.referenceLists").exists());
     }
 
     /**
@@ -120,11 +112,8 @@ public class PatientStudyViewRestControllerTest extends BaseWebContextSensitiveT
      */
     @Test
     public void getPatientStudyView_ValidPatientId_FormDataContainsPatientDemographics() throws Exception {
-        mockMvc.perform(get("/rest/patient-study-view")
-                .param("patientID", testPatient.getId())
-                .session(mockSession)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/rest/patient-study-view").param("patientID", testPatient.getId()).session(mockSession)
+                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.formData.lastName").value("Dupont"))
                 .andExpect(jsonPath("$.formData.firstName").value("Marie"))
                 .andExpect(jsonPath("$.formData.gender").value("F"));
@@ -136,11 +125,8 @@ public class PatientStudyViewRestControllerTest extends BaseWebContextSensitiveT
      */
     @Test
     public void getPatientStudyView_ValidPatientId_FormDataContainsPatientPK() throws Exception {
-        mockMvc.perform(get("/rest/patient-study-view")
-                .param("patientID", testPatient.getId())
-                .session(mockSession)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/rest/patient-study-view").param("patientID", testPatient.getId()).session(mockSession)
+                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.formData.patientPK").value(testPatient.getId()));
     }
 
@@ -151,12 +137,8 @@ public class PatientStudyViewRestControllerTest extends BaseWebContextSensitiveT
      */
     @Test
     public void getPatientStudyView_NonExistentPatientId_Returns200WithError() throws Exception {
-        mockMvc.perform(get("/rest/patient-study-view")
-                .param("patientID", "999999999")
-                .session(mockSession)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.error").exists())
+        mockMvc.perform(get("/rest/patient-study-view").param("patientID", "999999999").session(mockSession)
+                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$.error").exists())
                 .andExpect(jsonPath("$.formData").exists());
     }
 
@@ -166,13 +148,9 @@ public class PatientStudyViewRestControllerTest extends BaseWebContextSensitiveT
      */
     @Test
     public void getPatientStudyView_BlankPatientId_Returns200WithEmptyFormData() throws Exception {
-        mockMvc.perform(get("/rest/patient-study-view")
-                .param("patientID", "")
-                .session(mockSession)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.referenceLists").exists())
-                .andExpect(jsonPath("$.formData").exists());
+        mockMvc.perform(get("/rest/patient-study-view").param("patientID", "").session(mockSession)
+                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.referenceLists").exists()).andExpect(jsonPath("$.formData").exists());
     }
 
     /**
@@ -181,11 +159,8 @@ public class PatientStudyViewRestControllerTest extends BaseWebContextSensitiveT
      */
     @Test
     public void getPatientStudyView_NoContentTypeHeader_ReturnsJson() throws Exception {
-        mockMvc.perform(get("/rest/patient-study-view")
-                .param("patientID", testPatient.getId())
-                .session(mockSession))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.formData").exists());
+        mockMvc.perform(get("/rest/patient-study-view").param("patientID", testPatient.getId()).session(mockSession))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.formData").exists());
     }
 
     /**
@@ -194,11 +169,8 @@ public class PatientStudyViewRestControllerTest extends BaseWebContextSensitiveT
      */
     @Test
     public void getPatientStudyView_ValidPatientId_ResponseContainsAvailableStudyForms() throws Exception {
-        mockMvc.perform(get("/rest/patient-study-view")
-                .param("patientID", testPatient.getId())
-                .session(mockSession)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/rest/patient-study-view").param("patientID", testPatient.getId()).session(mockSession)
+                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.formData.availableStudyTypes").exists());
     }
 }
