@@ -1,5 +1,9 @@
 import { test, expect } from "@playwright/test";
-import { UI_TIMEOUT, SHORT_TIMEOUT, LONG_TIMEOUT } from "../../../helpers/timeouts";
+import {
+  UI_TIMEOUT,
+  SHORT_TIMEOUT,
+  LONG_TIMEOUT,
+} from "../../../helpers/timeouts";
 
 /**
  * Patient Study Edit — Playwright E2E
