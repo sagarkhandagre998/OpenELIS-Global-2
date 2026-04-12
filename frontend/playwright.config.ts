@@ -85,6 +85,7 @@ export default defineConfig({
         "**/navbar.spec.ts",
         "**/sidenav.spec.ts",
         "**/patient-study-view.spec.ts",
+        "**/patient-study-edit.spec.ts",
       ],
       use: {
         ...devices["Desktop Chrome"],
