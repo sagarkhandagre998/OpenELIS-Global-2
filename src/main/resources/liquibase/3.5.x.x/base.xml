@@ -1,17 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+>
 
   <!-- Generic Localization System - Enables unlimited language support -->
-  <include relativeToChangelogFile="true" file="001-generic-localization-system.xml"/>
+  <include
+        relativeToChangelogFile="true"
+        file="001-generic-localization-system.xml"
+    />
 
   <!-- EQA Enabled configuration for Order Entry -->
-  <include relativeToChangelogFile="true" file="002-eqa-enabled-config.xml"/>
+  <include relativeToChangelogFile="true" file="002-eqa-enabled-config.xml" />
 
   <!-- Add hide_in_new_ui column to menu table -->
-  <include relativeToChangelogFile="true" file="003-add-hide-in-new-ui-column.xml"/>
+  <include
+        relativeToChangelogFile="true"
+        file="003-add-hide-in-new-ui-column.xml"
+    />
 
   <!-- Patient Study View React menu entry (Patient -> Study -> View migration) -->
   <include
@@ -23,6 +30,15 @@
   <include
         relativeToChangelogFile="true"
         file="005-patient-study-edit-react-menu.xml"
+    />
+
+  <!-- Patient ID document scanning (OGC-66) -->
+  <include relativeToChangelogFile="true" file="patient_id_document.xml" />
+
+  <!-- Default nationality configuration for patient entry -->
+  <include
+        relativeToChangelogFile="true"
+        file="default-nationality-config.xml"
     />
 
 </databaseChangeLog>
