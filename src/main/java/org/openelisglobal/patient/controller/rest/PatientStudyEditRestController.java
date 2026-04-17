@@ -125,12 +125,12 @@ public class PatientStudyEditRestController extends BaseRestController {
                 response.put("success", false);
                 response.put("error", "Cannot accession this record – access type not permitted");
             }
-        } catch (Exception e) {
+        } catch (Throwable t) {
             LogEvent.logError(this.getClass().getSimpleName(), "savePatientStudyEdit",
-                    "Error saving patient study edit: " + e.getMessage());
-            LogEvent.logError(e);
+                    "Error saving patient study edit: " + t.getMessage());
+            LogEvent.logError(t instanceof Exception ? (Exception) t : new RuntimeException(t));
             response.put("success", false);
-            response.put("error", e.getMessage() != null ? e.getMessage() : "Unexpected server error");
+            response.put("error", t.getMessage() != null ? t.getMessage() : "Unexpected server error");
             return ResponseEntity.status(500).body(response);
         }
 
