@@ -34,8 +34,6 @@ import org.openelisglobal.odoo.client.OdooClient;
 import org.openelisglobal.odoo.client.OdooConnection;
 import org.openelisglobal.odoo.config.TestProductMapping;
 import org.openelisglobal.organization.service.OrganizationTypeService;
-import org.openelisglobal.patient.controller.rest.PatientStudyEditRestController;
-import org.openelisglobal.patient.controller.rest.PatientStudyViewRestController;
 import org.openelisglobal.referral.fhir.service.FhirReferralService;
 import org.openelisglobal.reports.service.WHONetReportServiceImpl;
 import org.openelisglobal.requester.service.RequesterTypeService;
@@ -106,7 +104,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         "org.openelisglobal.eqa", "org.openelisglobal.qc", "org.openelisglobal.calendar",
         "org.openelisglobal.esig" }, excludeFilters = {
 
-                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.openelisglobal.patient.controller.*"),
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.openelisglobal.patient.controller.[^r][^e][^s][^t].*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.openelisglobal.organization.controller.*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.openelisglobal.sample.controller.*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.openelisglobal.result.controller.*"),
@@ -356,13 +354,4 @@ public class AppTestConfig implements WebMvcConfigurer {
         return mock(DataExportTaskDAO.class);
     }
 
-    @Bean
-    public PatientStudyViewRestController patientStudyViewRestController() {
-        return new PatientStudyViewRestController();
-    }
-
-    @Bean
-    public PatientStudyEditRestController patientStudyEditRestController() {
-        return new PatientStudyEditRestController();
-    }
 }
